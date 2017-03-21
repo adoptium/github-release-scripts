@@ -1,6 +1,5 @@
 var GitHub = require('github-api');
 var fs = require('fs')
-var Client = require('ftp');
 
 // basic auth
 var gh = new GitHub({
