@@ -19,13 +19,19 @@ for f in OpenJDK*.tar.gz
 do
 	case $f in
     *Linux*)
-    	OS=Linux && EXT=tar.gz ;;
+    	OS=Linux && EXT=tar.gz
+			case $f in
+				*x64*)
+					ARCH=x64 ;;
+				*s390x*)
+					ARCH=s390x ;;
+			esac ;;
     *Win*)
-    	OS=Win && EXT=zip ;;
+    	OS=Win && ARCH=x64 && EXT=zip ;;
     *Mac*)
-    	OS=Mac && EXT=tar.gz ;;
-    esac
-    mv $f OpenJDK8_x64_${OS}_$TIMESTAMP.${EXT}
+    	OS=Mac && ARCH=x64 && EXT=tar.gz ;;
+  esac
+mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
 done
 files=`ls $PWD/OpenJDK*.tar.gz | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 node upload.js --files $files --tag ${VERSION}-${TIMESTAMP} --version $VERSION --repo $REPO
