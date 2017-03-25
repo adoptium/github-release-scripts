@@ -5,7 +5,7 @@ var path = require('path')
 var optionDefinitions = [
   { name: 'files', type: String, multiple: true },
   { name: 'tag', type: String },
-  { name: 'version', type: String},
+  { name: 'description', type: String},
   { name: 'repo', type: String}
 ];
 
@@ -19,7 +19,7 @@ publishRelease({
   repo: 'openjdk-' + options.repo,
   tag:  options.tag,
   name: options.tag,
-  notes: 'Nightly Build of ' + options.version,
+  notes: options.description,
   draft: false,
   prerelease: false,
   reuseRelease: true,
