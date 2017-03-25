@@ -31,9 +31,17 @@ do
     *Mac*)
     	OS=Mac && ARCH=x64 && EXT=tar.gz ;;
   esac
-mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
+	if [ "$REPO" == "releases" ]; then
+		mv $f OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}
+	elif [ "$REPO" == "nightly" ]; then
+		mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
+	fi
 done
 files=`ls $PWD/OpenJDK*.tar.gz | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
-node upload.js --files $files --tag ${VERSION}-${TIMESTAMP} --version $VERSION --repo $REPO
+if [ "$REPO" == "releases" ]; then
+	node upload.js --files $files --tag ${VERSION} --description "Official Release of $VERSION" --repo $REPO
+elif [ "$REPO" == "nightly" ]; then
+	node upload.js --files $files --tag ${VERSION}-${TIMESTAMP} --description "Nightly Build of $VERSION" --repo $REPO
+fi
 node app.js
 ./sbin/gitUpdate.sh
