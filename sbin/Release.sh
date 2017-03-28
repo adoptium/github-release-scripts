@@ -37,7 +37,33 @@ do
 		mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
 	fi
 done
+<<<<<<< HEAD
 files=`ls $PWD/OpenJDK*.tar.gz | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+=======
+for c in OpenJDK*.sha256.txt
+do
+	case $c in
+		*Linux*)
+			OS=Linux
+			case $c in
+				*x64*)
+					ARCH=x64 ;;
+				*s390x*)
+					ARCH=s390x ;;
+			esac ;;
+		*Win*)
+			OS=Win && ARCH=x64;;
+		*Mac*)
+			OS=Mac && ARCH=x64 ;;
+	esac
+	if [ "$REPO" == "releases" ]; then
+		mv $c OpenJDK8_${ARCH}_${OS}_${VERSION}.sha256.txt
+	elif [ "$REPO" == "nightly" ]; then
+		mv $c OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.sha256.txt
+	fi
+done
+files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+>>>>>>> fc51da779be0fded4bf81df35eeddb736bf83800
 if [ "$REPO" == "releases" ]; then
 	node upload.js --files $files --tag ${VERSION} --description "Official Release of $VERSION" --repo $REPO
 elif [ "$REPO" == "nightly" ]; then
