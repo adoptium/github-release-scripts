@@ -1,5 +1,5 @@
 node_modules
 nightly.json
 releases.json
-./openjdk-nightly
-./openjdk-releases
+/openjdk-nightly
+/openjdk-releases
