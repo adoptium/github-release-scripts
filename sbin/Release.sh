@@ -27,8 +27,8 @@ do
 					ARCH=s390x ;;
 				*ppc64le*)
 					ARCH=ppc64le ;;
-				*arm64*)
-					ARCH=arm64 ;;
+				*aarch64*)
+					ARCH=aarch64 ;;
 			esac ;;
     *Win*)
     	OS=Win && ARCH=x64 && EXT=zip ;;
@@ -53,8 +53,8 @@ do
 					ARCH=s390x ;;
 				*ppc64le*)
 					ARCH=ppc64le ;;
-				*arm64*)
-					ARCH=arm64 ;;
+				*aarch64*)
+					ARCH=aarch64 ;;
 			esac ;;
 		*Win*)
 			OS=Win && ARCH=x64;;
