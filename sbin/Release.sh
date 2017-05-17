@@ -30,10 +30,20 @@ do
 				*aarch64*)
 					ARCH=aarch64 ;;
 			esac ;;
-    *Win*)
-    	OS=Win && ARCH=x64 && EXT=zip ;;
     *Mac*)
     	OS=Mac && ARCH=x64 && EXT=tar.gz ;;
+  esac
+	if [ "$REPO" == "releases" ]; then
+		mv $f OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}
+	elif [ "$REPO" == "nightly" ]; then
+		mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
+	fi
+done
+for f in OpenJDK*.zip
+do
+	case $f in
+    *Win*)
+    	OS=Win && ARCH=x64 && EXT=zip ;;
   esac
 	if [ "$REPO" == "releases" ]; then
 		mv $f OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}
