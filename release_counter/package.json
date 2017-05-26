@@ -1,0 +1,17 @@
+{
+  "name": "release_counter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "counter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "node-emoji": "^1.5.1",
+    "nodegit": "^0.18.3",
+    "rimraf": "^2.6.1"
+  }
+}
