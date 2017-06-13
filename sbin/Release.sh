@@ -56,6 +56,7 @@ do
 	case $c in
 		*Linux*)
 			OS=Linux
+			EXT=tar.gz
 			case $c in
 				*x64*)
 					ARCH=x64 ;;
@@ -67,13 +68,17 @@ do
 					ARCH=aarch64 ;;
 			esac ;;
 		*Win*)
-			OS=Win && ARCH=x64;;
+			OS=Win && ARCH=x64 && EXT=zip;;
 		*Mac*)
-			OS=Mac && ARCH=x64 ;;
+			OS=Mac && ARCH=x64 && EXT=tar.gz;;
 	esac
+	FILENAME=`cat $c | awk  '{print $2}'`
 	if [ "$REPO" == "releases" ]; then
+		sed -i -e "s/${FILENAME}/OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}/g" $c
 		mv $c OpenJDK8_${ARCH}_${OS}_${VERSION}.sha256.txt
+
 	elif [ "$REPO" == "nightly" ]; then
+		sed -i -e "s/${FILENAME}/OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}/g" $c
 		mv $c OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.sha256.txt
 	fi
 done
