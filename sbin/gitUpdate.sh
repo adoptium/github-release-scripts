@@ -16,10 +16,15 @@
 if [ "$REPO" == "releases" ]; then
   git clone git@github.com:AdoptOpenJDK/openjdk-releases.git
   rm -rf openjdk-releases/release.json
+
   mv releases.json openjdk-releases/
   mv latest_release.json openjdk-releases/
+
+  mv releases_openjdk8.json openjdk-releases/
+  mv latest_release_openjdk8.json openjdk-releases/
+
   cd $WORKSPACE/openjdk-releases
-  git add releases.json latest_release.json
+  git add releases.json latest_release.json releases_openjdk8.json latest_release_openjdk8.json
   git commit -m "updated releases.json" || echo "nothing to commit"
   if [ `git diff origin/master | wc -l` > 0 ]; then
   	git push
@@ -31,10 +36,15 @@ fi
 if [ "$REPO" == "nightly" ]; then
   git clone git@github.com:AdoptOpenJDK/openjdk-nightly.git
   rm -rf openjdk-nightly/nightly.json
+
   mv nightly.json openjdk-nightly/
   mv latest_nightly.json openjdk-nightly/
+
+  mv nightly_openjdk8.json openjdk-nightly/
+  mv latest_nightly_openjdk8.json openjdk-nightly/
+
   cd $WORKSPACE/openjdk-nightly
-  git add nightly.json latest_nightly.json
+  git add nightly.json latest_nightly.json nightly_openjdk8.json latest_nightly_openjdk8.json
   git commit -m "updated nightly.json" || echo "nothing to commit"
   if [ `git diff origin/master | wc -l` > 0 ]; then
   	git push
