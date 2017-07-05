@@ -32,6 +32,8 @@ do
 			esac ;;
     *Mac*)
     	OS=Mac && ARCH=x64 && EXT=tar.gz ;;
+    *AIX*)
+    	OS=AIX && ARCH=ppc64 && EXT=tar.gz ;;
   esac
 	if [ "$REPO" == "releases" ]; then
 		mv $f OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}
@@ -68,9 +70,11 @@ do
 					ARCH=aarch64 ;;
 			esac ;;
 		*Win*)
-			OS=Win && ARCH=x64 && EXT=zip;;
+			OS=Win && ARCH=x64 && EXT=zip ;;
 		*Mac*)
-			OS=Mac && ARCH=x64 && EXT=tar.gz;;
+			OS=Mac && ARCH=x64 && EXT=tar.gz ;;
+		*AIX*)
+    			OS=AIX && ARCH=ppc64 && EXT=tar.gz ;;
 	esac
 	FILENAME=`cat $c | awk  '{print $2}'`
 	if [ "$REPO" == "releases" ]; then

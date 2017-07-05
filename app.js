@@ -13,9 +13,15 @@ var nightly = gh.getRepo('AdoptOpenJDK', 'openjdk-nightly');
 releases.listReleases(function(err, result) {
     fs.writeFileSync('releases.json', JSON.stringify(result, null, 2))
     fs.writeFileSync('latest_release.json', JSON.stringify(result[0], null, 2))
+
+    fs.writeFileSync('releases_openjdk8.json', JSON.stringify(result, null, 2))
+    fs.writeFileSync('latest_release_openjdk8.json', JSON.stringify(result[0], null, 2))
 });
 
 nightly.listReleases(function(err, result) {
     fs.writeFileSync('nightly.json', JSON.stringify(result, null, 2))
     fs.writeFileSync('latest_nightly.json', JSON.stringify(result[0], null, 2))
+
+    fs.writeFileSync('nightly_openjdk8.json', JSON.stringify(result, null, 2))
+    fs.writeFileSync('latest_nightly_openjdk8.json', JSON.stringify(result[0], null, 2))
 });
