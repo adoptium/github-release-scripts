@@ -2,11 +2,23 @@ var publishRelease = require('publish-release')
 var commandLineArgs = require('command-line-args');
 var path = require('path')
 
-var optionDefinitions = [
-  { name: 'files', type: String, multiple: true },
-  { name: 'tag', type: String },
-  { name: 'description', type: String},
-  { name: 'repo', type: String}
+var optionDefinitions = [{
+    name: 'files',
+    type: String,
+    multiple: true
+  },
+  {
+    name: 'tag',
+    type: String
+  },
+  {
+    name: 'description',
+    type: String
+  },
+  {
+    name: 'repo',
+    type: String
+  }
 ];
 
 var options = commandLineArgs(optionDefinitions);
@@ -17,7 +29,7 @@ publishRelease({
   token: process.env['GITHUB_TOKEN'],
   owner: 'AdoptOpenJDK',
   repo: 'openjdk-' + options.repo,
-  tag:  options.tag,
+  tag: options.tag,
   name: options.tag,
   notes: options.description,
   draft: false,
@@ -25,7 +37,7 @@ publishRelease({
   reuseRelease: true,
   reuseDraftOnly: true,
   assets: options.files,
-}, function (err, release) {
+}, function(err, release) {
   if (err) {
     console.error(err);
   } else {

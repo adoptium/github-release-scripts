@@ -22,9 +22,9 @@ if [ "$REPO" == "releases" ]; then
   git add releases.json latest_release.json
   git commit -m "updated releases.json" || echo "nothing to commit"
   if [ `git diff origin/master | wc -l` > 0 ]; then
-  	git push
+    git push
   else
-  	echo "releases already up to date"
+    echo "releases already up to date"
   fi
 fi
 
@@ -37,8 +37,8 @@ if [ "$REPO" == "nightly" ]; then
   git add nightly.json latest_nightly.json
   git commit -m "updated nightly.json" || echo "nothing to commit"
   if [ `git diff origin/master | wc -l` > 0 ]; then
-  	git push
+    git push
   else
-  	echo "nightly already up to date"
+    echo "nightly already up to date"
   fi
 fi

@@ -17,80 +17,80 @@ TIMESTAMP="$(date +'%Y%d%m')"
 npm install
 for f in OpenJDK*.tar.gz
 do
-	case $f in
+  case $f in
     *Linux*)
-    	OS=Linux && EXT=tar.gz
-			case $f in
-				*x64*)
-					ARCH=x64 ;;
-				*s390x*)
-					ARCH=s390x ;;
-				*ppc64le*)
-					ARCH=ppc64le ;;
-				*aarch64*)
-					ARCH=aarch64 ;;
-			esac ;;
+      OS=Linux && EXT=tar.gz
+      case $f in
+        *x64*)
+        ARCH=x64 ;;
+        *s390x*)
+        ARCH=s390x ;;
+        *ppc64le*)
+        ARCH=ppc64le ;;
+        *aarch64*)
+        ARCH=aarch64 ;;
+    esac ;;
     *Mac*)
-    	OS=Mac && ARCH=x64 && EXT=tar.gz ;;
+    OS=Mac && ARCH=x64 && EXT=tar.gz ;;
     *AIX*)
-    	OS=AIX && ARCH=ppc64 && EXT=tar.gz ;;
+    OS=AIX && ARCH=ppc64 && EXT=tar.gz ;;
   esac
-	if [ "$REPO" == "releases" ]; then
-		mv $f OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}
-	elif [ "$REPO" == "nightly" ]; then
-		mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
-	fi
+  if [ "$REPO" == "releases" ]; then
+    mv $f OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}
+    elif [ "$REPO" == "nightly" ]; then
+    mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
+  fi
 done
 for f in OpenJDK*.zip
 do
-	case $f in
+  case $f in
     *Win*)
-    	OS=Win && ARCH=x64 && EXT=zip ;;
+    OS=Win && ARCH=x64 && EXT=zip ;;
   esac
-	if [ "$REPO" == "releases" ]; then
-		mv $f OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}
-	elif [ "$REPO" == "nightly" ]; then
-		mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
-	fi
+  if [ "$REPO" == "releases" ]; then
+    mv $f OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}
+    elif [ "$REPO" == "nightly" ]; then
+    mv $f OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}
+  fi
 done
 for c in OpenJDK*.sha256.txt
 do
-	case $c in
-		*Linux*)
-			OS=Linux
-			EXT=tar.gz
-			case $c in
-				*x64*)
-					ARCH=x64 ;;
-				*s390x*)
-					ARCH=s390x ;;
-				*ppc64le*)
-					ARCH=ppc64le ;;
-				*aarch64*)
-					ARCH=aarch64 ;;
-			esac ;;
-		*Win*)
-			OS=Win && ARCH=x64 && EXT=zip ;;
-		*Mac*)
-			OS=Mac && ARCH=x64 && EXT=tar.gz ;;
-		*AIX*)
-    			OS=AIX && ARCH=ppc64 && EXT=tar.gz ;;
-	esac
-	FILENAME=`cat $c | awk  '{print $2}'`
-	if [ "$REPO" == "releases" ]; then
-		sed -i -e "s/${FILENAME}/OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}/g" $c
-		mv $c OpenJDK8_${ARCH}_${OS}_${VERSION}.sha256.txt
+  case $c in
+    *Linux*)
+      OS=Linux
+      EXT=tar.gz
+      case $c in
+        *x64*)
+        ARCH=x64 ;;
+        *s390x*)
+        ARCH=s390x ;;
+        *ppc64le*)
+        ARCH=ppc64le ;;
+        *aarch64*)
+        ARCH=aarch64 ;;
+    esac ;;
+    *Win*)
+    OS=Win && ARCH=x64 && EXT=zip ;;
+    *Mac*)
+    OS=Mac && ARCH=x64 && EXT=tar.gz ;;
+    *AIX*)
+    OS=AIX && ARCH=ppc64 && EXT=tar.gz ;;
+  esac
+  FILENAME=`cat $c | awk  '{print $2}'`
+  if [ "$REPO" == "releases" ]; then
+    sed -i -e "s/${FILENAME}/OpenJDK8_${ARCH}_${OS}_${VERSION}.${EXT}/g" $c
+    mv $c OpenJDK8_${ARCH}_${OS}_${VERSION}.sha256.txt
 
-	elif [ "$REPO" == "nightly" ]; then
-		sed -i -e "s/${FILENAME}/OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}/g" $c
-		mv $c OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.sha256.txt
-	fi
+    elif [ "$REPO" == "nightly" ]; then
+    sed -i -e "s/${FILENAME}/OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.${EXT}/g" $c
+    mv $c OpenJDK8_${ARCH}_${OS}_$TIMESTAMP.sha256.txt
+  fi
 done
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 if [ "$REPO" == "releases" ]; then
-	node upload.js --files $files --tag ${VERSION} --description "Official Release of $VERSION" --repo $REPO
-elif [ "$REPO" == "nightly" ]; then
-	node upload.js --files $files --tag ${VERSION}-${TIMESTAMP} --description "Nightly Build of $VERSION" --repo $REPO
+  node upload.js --files $files --tag ${VERSION} --description "Official Release of $VERSION" --repo $REPO
+  elif [ "$REPO" == "nightly" ]; then
+  node upload.js --files $files --tag ${VERSION}-${TIMESTAMP} --description "Nightly Build of $VERSION" --repo $REPO
 fi
 node app.js
 ./sbin/gitUpdate.sh

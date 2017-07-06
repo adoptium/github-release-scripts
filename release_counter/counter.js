@@ -4,9 +4,9 @@ var colors = require('colors');
 var emoji = require('node-emoji')
 var rimraf = require('rimraf');
 var totalEver = 0;
-rimraf('./releases', function () {
-Git.Clone("https://github.com/AdoptOpenJDK/openjdk-releases.git", "./releases")
-  .then(function(run) {
+rimraf('./releases', function() {
+  Git.Clone("https://github.com/AdoptOpenJDK/openjdk-releases.git", "./releases")
+    .then(function(run) {
       var release = require('./releases/releases.json');
 
       for (var version in release) {
