@@ -7,8 +7,8 @@ var gh = new GitHub({
 });
 
 //var AdoptOpenJDK = gh.getOrganization('AdoptOpenJDK');
-var releases = gh.getRepo('AdoptOpenJDK', 'openjdk-releases');
-var nightly = gh.getRepo('AdoptOpenJDK', 'openjdk-nightly');
+var releases = gh.getRepo('AdoptOpenJDK', 'openjdk8-releases');
+var nightly = gh.getRepo('AdoptOpenJDK', 'openjdk8-nightly');
 
 releases.listReleases(function(err, result) {
   fs.writeFileSync('releases.json', JSON.stringify(result, null, 2))
