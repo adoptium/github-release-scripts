@@ -28,7 +28,7 @@ console.log('Uploading Files:', options.files);
 publishRelease({
   token: process.env['GITHUB_TOKEN'],
   owner: 'AdoptOpenJDK',
-  repo: 'openjdk-' + options.repo,
+  repo: 'openjdk8-' + options.repo,
   tag: options.tag,
   name: options.tag,
   notes: options.description,
