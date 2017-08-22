@@ -14,11 +14,11 @@
 #
 
 if [ "$REPO" == "releases" ]; then
-  git clone git@github.com:AdoptOpenJDK/openjdk8-releases.git
-  rm -rf openjdk8-releases/release.json
-  mv releases.json openjdk8-releases/
-  mv latest_release.json openjdk8-releases/
-  cd $WORKSPACE/openjdk8-releases
+  git clone git@github.com:AdoptOpenJDK/open"$VERSION"-releases.git
+  rm -rf open"$VERSION"-releases/release.json
+  mv "$VERSION"/releases.json open"$VERSION"-releases/
+  mv "$VERSION"/latest_release.json open"$VERSION"-releases/
+  cd $WORKSPACE/open"$VERSION"-releases
   git add releases.json latest_release.json
   git commit -m "updated releases.json" || echo "nothing to commit"
   if [ `git diff origin/master | wc -l` > 0 ]; then
@@ -29,11 +29,11 @@ if [ "$REPO" == "releases" ]; then
 fi
 
 if [ "$REPO" == "nightly" ]; then
-  git clone git@github.com:AdoptOpenJDK/openjdk8-nightly.git
-  rm -rf openjdk8-nightly/nightly.json
-  mv nightly.json openjdk8-nightly/
-  mv latest_nightly.json openjdk8-nightly/
-  cd $WORKSPACE/openjdk8-nightly
+  git clone git@github.com:AdoptOpenJDK/open"$VERSION"-nightly.git
+  rm -rf open"$VERSION"-nightly/nightly.json
+  mv "$VERSION"/nightly.json open"$VERSION"-nightly/
+  mv "$VERSION"/latest_nightly.json open"$VERSION"-nightly/
+  cd $WORKSPACE/open"$VERSION"-nightly
   git add nightly.json latest_nightly.json
   git commit -m "updated nightly.json" || echo "nothing to commit"
   if [ `git diff origin/master | wc -l` > 0 ]; then
