@@ -14,7 +14,17 @@
 #
 
 npm install
-npm start
+# loop through openjdk8 repos
+export VERSION="jdk8"
+node app.js
+export REPO="nightly"
+./sbin/gitUpdate.sh
+export REPO="releases"
+./sbin/gitUpdate.sh
+
+# loop through openjdk9 repos
+export VERSION="jdk9"
+node app.js
 export REPO="nightly"
 ./sbin/gitUpdate.sh
 export REPO="releases"

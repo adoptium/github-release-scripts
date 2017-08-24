@@ -5,7 +5,7 @@ var emoji = require('node-emoji')
 var rimraf = require('rimraf');
 var totalEver = 0;
 rimraf('./releases', function() {
-  Git.Clone("https://github.com/AdoptOpenJDK/openjdk-releases.git", "./releases")
+  Git.Clone("https://github.com/AdoptOpenJDK/openjdk8-releases.git", "./releases")
     .then(function(run) {
       var release = require('./releases/releases.json');
 
