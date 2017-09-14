@@ -86,12 +86,12 @@ do
     mv $c Open${VERSION}_${ARCH}_${OS}_$TIMESTAMP.sha256.txt
   fi
 done
+export VERSION=`echo $VERSION | awk '{print tolower($0)}'`
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 if [ "$REPO" == "releases" ]; then
   node upload.js --files $files --tag ${TAG} --description "Official Release of $TAG" --repo $REPO
   elif [ "$REPO" == "nightly" ]; then
   node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --repo $REPO
 fi
-export VERSION=`echo $VERSION | awk '{print tolower($0)}'`
 node app.js
 ./sbin/gitUpdate.sh
