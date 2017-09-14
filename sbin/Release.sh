@@ -92,5 +92,6 @@ if [ "$REPO" == "releases" ]; then
   elif [ "$REPO" == "nightly" ]; then
   node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --repo $REPO
 fi
+export VERSION=`echo $VERSION | awk '{print tolower($0)}'`
 node app.js
 ./sbin/gitUpdate.sh
