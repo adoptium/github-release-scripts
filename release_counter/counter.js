@@ -3,7 +3,7 @@ var path = require('path');
 var colors = require('colors');
 var emoji = require('node-emoji')
 var rimraf = require('rimraf');
-console.log("OpenJDK 8 with Hotspot"
+console.log("OpenJDK 8 with Hotspot")
 var totalEver = 0;
 rimraf('./releases', function() {
   Git.Clone("https://github.com/AdoptOpenJDK/openjdk8-releases.git", "./releases")
@@ -32,7 +32,7 @@ rimraf('./releases', function() {
     });
 });
 
-console.log("OpenJDK 9 with Hotspot"
+console.log("OpenJDK 9 with Hotspot")
 var totalEver = 0;
 rimraf('./releases', function() {
   Git.Clone("https://github.com/AdoptOpenJDK/openjdk9-releases.git", "./releases")
@@ -61,7 +61,7 @@ rimraf('./releases', function() {
     });
 });
 
-console.log("OpenJDK 9 with OpenJ9"
+console.log("OpenJDK 9 with OpenJ9")
 var totalEver = 0;
 rimraf('./releases', function() {
   Git.Clone("https://github.com/AdoptOpenJDK/openjdk9-openj9-releases.git", "./releases")
