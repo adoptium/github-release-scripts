@@ -3,9 +3,13 @@ var path = require('path');
 var colors = require('colors');
 var emoji = require('node-emoji')
 var rimraf = require('rimraf');
+
+var args = process.argv.slice(2);
+console.log(args[0])
+
 var totalEver = 0;
 rimraf('./releases', function() {
-  Git.Clone("https://github.com/AdoptOpenJDK/openjdk8-releases.git", "./releases")
+  Git.Clone("https://github.com/AdoptOpenJDK/" + args[0] + "-releases.git", "./releases")
     .then(function(run) {
       var release = require('./releases/releases.json');
 
