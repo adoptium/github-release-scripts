@@ -29,3 +29,11 @@ export REPO="nightly"
 ./sbin/gitUpdate.sh
 export REPO="releases"
 ./sbin/gitUpdate.sh
+
+# loop through openjdk9-openj9 repos
+export VERSION="jdk9-openj9"
+node app.js
+export REPO="nightly"
+./sbin/gitUpdate.sh
+export REPO="releases"
+./sbin/gitUpdate.sh
