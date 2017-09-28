@@ -36,9 +36,9 @@ do
     OS=AIX && ARCH=ppc64 && EXT=tar.gz ;;
   esac
   if [ "$REPO" == "releases" ]; then
-    mv $f Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXT}
+    mv $f "Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXT}"
     elif [ "$REPO" == "nightly" ]; then
-    mv $f Open${VERSION}_${ARCH}_${OS}_$TIMESTAMP.${EXT}
+    mv $f "Open${VERSION}_${ARCH}_${OS}_$TIMESTAMP.${EXT}"
   fi
 done
 for f in OpenJDK*.zip
@@ -79,11 +79,11 @@ do
   FILENAME=`cat $c | awk  '{print $2}'`
   if [ "$REPO" == "releases" ]; then
     sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXT}/g" $c
-    mv $c Open${VERSION}_${ARCH}_${OS}_${TAG}.sha256.txt
+    mv $c "Open${VERSION}_${ARCH}_${OS}_${TAG}.sha256.txt"
 
     elif [ "$REPO" == "nightly" ]; then
     sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_$TIMESTAMP.${EXT}/g" $c
-    mv $c Open${VERSION}_${ARCH}_${OS}_$TIMESTAMP.sha256.txt
+    mv $c "Open${VERSION}_${ARCH}_${OS}_$TIMESTAMP.sha256.txt"
   fi
 done
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
