@@ -31,6 +31,6 @@ rimraf('./releases', function() {
         }
         console.log("Total downloads for " + tag + ": " + total + "\n")
       }
-      console.log("Total Downloads Ever: " + totalEver + " " + emoji.get('trophy'))
+      console.log("Total Downloads Ever for " + args[0] + ": " + totalEver + " " + emoji.get('trophy'))
     });
 });
