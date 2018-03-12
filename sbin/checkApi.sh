@@ -38,6 +38,12 @@ export REPO="nightly"
 export REPO="releases"
 ./sbin/gitUpdate.sh
 
+# loop through openjdk amber repos
+export VERSION="amber"
+node app.js
+export REPO="nightly"
+./sbin/gitUpdate.sh
+
 # loop through openjdk8-openj9 repos
 export VERSION="jdk8-openj9"
 node app.js
