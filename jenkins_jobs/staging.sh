@@ -74,6 +74,8 @@ EOF
     git add .
 	git commit -m "Remove development files"
 	git push origin gh-pages
+  message="Now on staging server [here](https://staging.adoptopenjdk.net/$PR_NUMBER)."
+  curl -u adoptopenjdk-github-bot:$TOKEN --data '{"body": "'"$message"'"}' https://api.github.com/repos/AdoptOpenJDK/openjdk-website/issues/$PR_NUMBER/comments
 else
 	echo "Build or lint failed."
 fi
