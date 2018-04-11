@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-TIMESTAMP="$(date +'%Y%d%m')"
+TIMESTAMP="$(date +'%Y%m%d')"
 npm install
 for f in OpenJDK*.tar.gz
 do
