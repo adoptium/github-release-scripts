@@ -18,41 +18,22 @@ npm install
 for f in OpenJDK*.tar.gz
 do
   re="OpenJDK([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)";
+  EXT=tar.gz;
   if [[ $f =~ $re ]]; 
   then 
     VERSION=${BASH_REMATCH[1]};
     OS=${BASH_REMATCH[2]};
     ARCH=${BASH_REMATCH[3]};
     TAG=${BASH_REMATCH[4]};
-    echo "found version:${VERSION} os:${OS} arch:${ARCH} tag:${TAG}"; 
+    echo "version:${VERSION} os:${OS} arch:${ARCH} tag:${TAG}"; 
   fi
-done
-  
-  case $f in
-    *Linux_largeHeap*)
-    *Linux*)
-      OS=Linux && EXT=tar.gz
-      case $f in
-        *x86)
-        ARCH=x64 ;;
-        *s390x*)
-        ARCH=s390x ;;
-        *ppc64le*)
-        ARCH=ppc64le ;;
-        *aarch64*)
-        ARCH=aarch64 ;;
-    esac ;;
-    *Mac*)
-    OS=Mac && ARCH=x64 && EXT=tar.gz ;;
-    *AIX*)
-    OS=AIX && ARCH=ppc64 && EXT=tar.gz ;;
-  esac
   if [ "$REPO" == "releases" ]; then
     mv $f "Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXT}"
     elif [ "$REPO" == "nightly" ]; then
     mv $f "Open${VERSION}_${ARCH}_${OS}_$TIMESTAMP.${EXT}"
   fi
 done
+
 for f in OpenJDK*.zip
 do
   case $f in
