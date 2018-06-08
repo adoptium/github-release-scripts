@@ -17,11 +17,23 @@ TIMESTAMP="$(date +'%Y%m%d')"
 npm install
 for f in OpenJDK*.tar.gz
 do
+  re="OpenJDK([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)";
+  if [[ $f =~ $re ]]; 
+  then 
+    VERSION=${BASH_REMATCH[1]};
+    OS=${BASH_REMATCH[2]};
+    ARCH=${BASH_REMATCH[3]};
+    TAG=${BASH_REMATCH[4]};
+    echo "found version:${VERSION} os:${OS} arch:${ARCH} tag:${TAG}"; 
+  fi
+done
+  
   case $f in
+    *Linux_largeHeap*)
     *Linux*)
       OS=Linux && EXT=tar.gz
       case $f in
-        *x64*)
+        *x86)
         ARCH=x64 ;;
         *s390x*)
         ARCH=s390x ;;
