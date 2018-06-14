@@ -20,11 +20,11 @@ npm install
 #           OpenJDK8_x64_LinuxLH_201813060547.tar.gz, 
 #           OpenJDK10_aarch64_Linux_201813060547.sha256.txt
 #           OpenJDKamber_x64_Linux_201813061304.tar.gz	
-for f in OpenJDK*
+for file in OpenJDK*
 do
 #              1)VERSION 2)ARCH         3)OS           4)TS_TAG       5)EXTENSION 
   regex="OpenJDK([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+).(tar.gz|sha256.txt|zip)";
-  if [[ $f =~ $regex ]]; 
+  if [[ $file =~ $regex ]]; 
   then 
     VERSION=${BASH_REMATCH[1]};
     ARCH=${BASH_REMATCH[2]};
@@ -33,12 +33,12 @@ do
     EXTENSION=${BASH_REMATCH[5]};
     echo "version:${VERSION} arch: ${ARCH} os:${OS} timestampOrTag:${TS_TAG} extension: ${EXTENSION}"; 
   fi
-  mv $f "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
+  mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
   if [ "$EXTENSION" == "zip" ]; 
   then
-    FILENAME=`cat $f | awk  '{print $2}'`
-    sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $f
-    mv $f "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.sha256.txt"
+    FILENAME=`cat $file | awk  '{print $2}'`
+    sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $file
+    mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.sha256.txt"
   fi
 done
 
