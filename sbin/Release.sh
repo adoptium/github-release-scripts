@@ -33,12 +33,12 @@ do
     EXTENSION=${BASH_REMATCH[5]};
     echo "version:${VERSION} arch: ${ARCH} os:${OS} timestampOrTag:${TS_TAG} extension: ${EXTENSION}"; 
   fi
-  mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
+  mv $file "OpenJDK${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
   if [ "$EXTENSION" == "zip" ]; 
   then
     FILENAME=`cat $file | awk  '{print $2}'`
-    sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $file
-    mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.sha256.txt"
+    sed -i -e "s/${FILENAME}/OpenJDK${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $file
+    mv $file "OpenJDK${VERSION}_${ARCH}_${OS}_${TS_TAG}.sha256.txt"
   fi
 done
 
