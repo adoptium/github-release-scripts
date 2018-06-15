@@ -27,7 +27,7 @@ do
   echo "Processing $file";
   if [[ $file =~ $regex ]]; 
   then 
-    VERSION=${BASH_REMATCH[1]};
+#   VERSION=${BASH_REMATCH[1]};
     ARCH=${BASH_REMATCH[2]};
     OS=${BASH_REMATCH[3]};
     TS_TAG=${BASH_REMATCH[4]};
