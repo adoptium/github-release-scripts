@@ -42,7 +42,7 @@ do
   fi
   if [ "$SHA_EXT" == ".sha256.txt" ]; 
   then
-    mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}${SHA_EXT}
+    mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}${SHA_EXT}"
   else
     mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
   fi
