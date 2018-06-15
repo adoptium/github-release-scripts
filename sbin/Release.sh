@@ -23,7 +23,8 @@ npm install
 for file in OpenJDK*
 do
 #              1)VERSION 2)ARCH         3)OS           4)TS_TAG       5)EXTENSION 
-  regex="OpenJDK([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+).(tar.gz|sha256.txt|zip)";
+  regex="Open(JDK[a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+).(tar.gz|sha256.txt|zip)";
+  echo "Processing $file";
   if [[ $file =~ $regex ]]; 
   then 
     VERSION=${BASH_REMATCH[1]};
@@ -33,13 +34,12 @@ do
     EXTENSION=${BASH_REMATCH[5]};
     echo "version:${VERSION} arch: ${ARCH} os:${OS} timestampOrTag:${TS_TAG} extension: ${EXTENSION}"; 
   fi
-  mv $file "OpenJDK${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
   if [ "$EXTENSION" == "zip" ]; 
   then
     FILENAME=`cat $file | awk  '{print $2}'`
-    sed -i -e "s/${FILENAME}/OpenJDK${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $file
-    mv $file "OpenJDK${VERSION}_${ARCH}_${OS}_${TS_TAG}.sha256.txt"
+    sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $file
   fi
+  mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
 done
 
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
