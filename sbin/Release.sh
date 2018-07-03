@@ -16,8 +16,9 @@
 npm install
 
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
-regexArchives="OpenJDK([[:digit:]]+)U?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($timestampRegex).(tar.gz|zip)";
-regexAllFiles="${regexArchives}(.sha256.txt)?";
+regex="OpenJDK([[:digit:]]+)U?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($timestampRegex).(tar.gz|zip)";
+regexArchivesOnly="${regex}$";
+regexAllFiles="${regex}(.sha256.txt)?";
 
 TIMESTAMP="$(date +'%Y-%m-%d-%H-%M')"
 
@@ -26,7 +27,7 @@ for file in OpenJDK*
 do
   echo "Processing $file";
 
-  if [[ $file =~ $regexArchives ]];
+  if [[ $file =~ $regexArchivesOnly ]];
   then
     newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
