@@ -20,7 +20,7 @@ regex="OpenJDK([[:digit:]]+)U?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($ti
 regexArchivesOnly="${regex}$";
 regexAllFiles="${regex}(.sha256.txt)?";
 
-TIMESTAMP="$(date +'%Y-%m-%d-%H-%M')"
+TIMESTAMP="$(date -u +'%Y-%m-%d-%H-%M')"
 
 # Rename to ensure a consistent timestamp across release
 for file in OpenJDK*
@@ -55,5 +55,7 @@ if [ "$REPO" == "releases" ]; then
 elif [ "$REPO" == "nightly" ]; then
   node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --repo $REPO
 fi
+
+# TODO: Bring back when ready to release
 #node app.js
 #./sbin/gitUpdate.sh
