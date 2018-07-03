@@ -14,32 +14,45 @@
 #
 
 npm install
+
+timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
+regexArchives="OpenJDK([[:digit:]]+)U?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($timestampRegex).(tar.gz|zip)";
+regexAllFiles="${regexArchives}(.sha256.txt)?";
+
+TIMESTAMP="$(date +'%Y-%m-%d-%H-%M')"
+
+# Rename to ensure a consistent timestamp across release
 for file in OpenJDK*
 do
-
-  timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
-  regex="OpenJDK([[:digit:]]+)U?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($timestampRegex).(tar.gz|zip)(.sha256.txt)?";
-
   echo "Processing $file";
-  if [[ $file =~ $regex ]];
+
+  if [[ $file =~ $regexArchives ]];
   then
+    newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
+
+    # Rename archive and checksum file with now timestamp
+    mv "${file}" "${newName}"
+    mv "${file}.sha256.txt" "${newName}.sha256.txt"
+
+    # Fix checksum file name
+    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
+
     FILE_VERSION=${BASH_REMATCH[1]};
     FILE_ARCH=${BASH_REMATCH[2]};
     FILE_OS=${BASH_REMATCH[3]};
     FILE_VARIANT=${BASH_REMATCH[4]};
-    TS_TAG=${BASH_REMATCH[5]};
     FILE_EXTENSION=${BASH_REMATCH[6]};
     FILE_SHA_EXT=${BASH_REMATCH[7]};
 
-    echo "version:${FILE_VERSION} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestampOrTag:${FILE_TS_TAG} extension:${FILE_EXTENSION} sha_ext:${FILE_SHA_EXT}";
+    echo "version:${FILE_VERSION} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestamp:${TIMESTAMP} extension:${FILE_EXTENSION} sha_ext:${FILE_SHA_EXT}";
   fi
 done
 
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 if [ "$REPO" == "releases" ]; then
-  node upload.js --files $files --tag ${TS_TAG} --description "Official Release of $TAG" --repo $REPO
+  node upload.js --files $files --tag ${TIMESTAMP} --description "Official Release of $TAG" --repo $REPO
 elif [ "$REPO" == "nightly" ]; then
-  node upload.js --files $files --tag ${TAG}-${TS_TAG} --description "Nightly Build of $TAG" --repo $REPO
+  node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --repo $REPO
 fi
 #node app.js
 #./sbin/gitUpdate.sh
