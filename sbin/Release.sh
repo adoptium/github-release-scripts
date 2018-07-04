@@ -20,6 +20,14 @@ regex="OpenJDK([[:digit:]]+)U?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($ti
 regexArchivesOnly="${regex}$";
 regexAllFiles="${regex}(.sha256.txt)?";
 
+
+# Date format is YYYY-MM-DD-hh-mm, i.e 2018-06-15-10-10.
+# So files will look like:
+#	 OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz
+#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz.sha256.txt
+#  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz
+#  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz.sha256.txt
+
 TIMESTAMP="$(date -u +'%Y-%m-%d-%H-%M')"
 
 # Rename to ensure a consistent timestamp across release
@@ -32,6 +40,7 @@ do
     newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
     # Rename archive and checksum file with now timestamp
+    echo "Renaming ${file} to ${newName}"
     mv "${file}" "${newName}"
     mv "${file}.sha256.txt" "${newName}.sha256.txt"
 
