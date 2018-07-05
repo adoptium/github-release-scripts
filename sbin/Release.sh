@@ -23,7 +23,7 @@ regexAllFiles="${regex}(.sha256.txt)?";
 
 # Date format is YYYY-MM-DD-hh-mm, i.e 2018-06-15-10-10.
 # So files will look like:
-#	 OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz
+#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz
 #  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz.sha256.txt
 #  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz
 #  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz.sha256.txt
@@ -65,6 +65,5 @@ elif [ "$REPO" == "nightly" ]; then
   node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --repo $REPO
 fi
 
-# TODO: Bring back when ready to release
-#node app.js
-#./sbin/gitUpdate.sh
+node app.js
+./sbin/gitUpdate.sh
