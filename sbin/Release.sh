@@ -16,7 +16,7 @@
 npm install
 
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
-regex="OpenJDK([[:digit:]]+)U?(?:-jre)_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($timestampRegex).(tar.gz|zip)";
+regex="OpenJDK([[:digit:]]+)U?(-jre)?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($timestampRegex).(tar.gz|zip)";
 regexArchivesOnly="${regex}$";
 
 
