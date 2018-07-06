@@ -16,14 +16,13 @@
 npm install
 
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
-regex="OpenJDK([[:digit:]]+)U?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($timestampRegex).(tar.gz|zip)";
+regex="OpenJDK([[:digit:]]+)U?(-jre)?_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+)_($timestampRegex).(tar.gz|zip)";
 regexArchivesOnly="${regex}$";
-regexAllFiles="${regex}(.sha256.txt)?";
 
 
 # Date format is YYYY-MM-DD-hh-mm, i.e 2018-06-15-10-10.
 # So files will look like:
-#	 OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz
+#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz
 #  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz.sha256.txt
 #  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz
 #  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz.sha256.txt
@@ -48,13 +47,12 @@ do
     sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
 
     FILE_VERSION=${BASH_REMATCH[1]};
-    FILE_ARCH=${BASH_REMATCH[2]};
-    FILE_OS=${BASH_REMATCH[3]};
-    FILE_VARIANT=${BASH_REMATCH[4]};
-    FILE_EXTENSION=${BASH_REMATCH[6]};
-    FILE_SHA_EXT=${BASH_REMATCH[7]};
+    FILE_ARCH=${BASH_REMATCH[3]};
+    FILE_OS=${BASH_REMATCH[4]};
+    FILE_VARIANT=${BASH_REMATCH[5]};
+    FILE_EXTENSION=${BASH_REMATCH[7]};
 
-    echo "version:${FILE_VERSION} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestamp:${TIMESTAMP} extension:${FILE_EXTENSION} sha_ext:${FILE_SHA_EXT}";
+    echo "version:${FILE_VERSION} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestamp:${TIMESTAMP} extension:${FILE_EXTENSION}";
   fi
 done
 
@@ -65,6 +63,5 @@ elif [ "$REPO" == "nightly" ]; then
   node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --repo $REPO
 fi
 
-# TODO: Bring back when ready to release
-#node app.js
-#./sbin/gitUpdate.sh
+node app.js
+./sbin/gitUpdate.sh
