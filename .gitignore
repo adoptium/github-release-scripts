@@ -3,3 +3,4 @@ nightly.json
 releases.json
 /openjdk-nightly
 /openjdk-releases
+.idea/
