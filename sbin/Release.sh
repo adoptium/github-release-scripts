@@ -13,6 +13,20 @@
 # limitations under the License.
 #
 
+# Sanity checks ...
+if [ ! "${REPO}" == "nightly" -a ! "${REPO}" == "releases" ]; then
+   echo REPO environment variable should be set to nightly or releases - aborting
+   exit 1
+fi
+if [ "${REPO}" == "releases" -a -z "$TAG" ]; then
+  echo Release build requested, but no TAG variable in the environment
+  exit 1
+fi
+if [ -z "${VERSION}" ]; then
+  echo 'VERSION not specified - should be JDKn[-VARIANT] e.g. JDK8 or JDK11-OPENJ9'
+  exit 1
+fi
+
 npm install
 # Expect a naming convention for build artifacts to follow this pattern:
 # OpenJDK<version>_<arch>_<os>_<timestampOrTag>.<extension>
@@ -34,22 +48,34 @@ do
     SHA_EXT=${BASH_REMATCH[5]};
     echo "version:${VERSION} arch:${ARCH} os:${OS} timestampOrTag:${TS_TAG} extension:${EXTENSION} sha_ext:${SHA_EXT}"; 
   fi
-  if [ "$EXTENSION" == "zip" ]; 
+  if [ "$EXTENSION" == "zip" -a "$SHA_EXT" == ".sha256.txt" ]; 
   then
     FILENAME=`cat $file | awk  '{print $2}'`
-    sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $file
+    if [ "${REPO}" == "releases" ]; then
+      sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXTENSION}/g" $file
+    else
+      sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $file
+    fi
   fi
   if [ "$SHA_EXT" == ".sha256.txt" ]; 
   then
-    mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}${SHA_EXT}"
+    if [ "${REPO}" == "releases" ]; then
+      mv $file "Open${VERSION}_${ARCH}_${OS}_${TAG}${SHA_EXT}"
+    else
+      mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}${SHA_EXT}"
+    fi
   else
-    mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
+    if [ "${REPO}" == "releases" ]; then
+      mv $file "Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXTENSION}"
+    else    
+      mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
+    fi
   fi
 done
 
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 if [ "$REPO" == "releases" ]; then
-  node upload.js --files $files --tag ${TS_TAG} --description "Official Release of $TAG" --repo $REPO
+  node upload.js --files $files --tag ${TAG} --description "Official Release of $TAG" --repo $REPO
   elif [ "$REPO" == "nightly" ]; then
   node upload.js --files $files --tag ${TAG}-${TS_TAG} --description "Nightly Build of $TAG" --repo $REPO
 fi
