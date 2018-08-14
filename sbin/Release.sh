@@ -36,17 +36,17 @@ npm install
 #           OpenJDKamber_x64_Linux_201813061304.tar.gz	
 for file in OpenJDK*
 do
-#                            1)ARCH         2)OS           3)TS_TAG       4)EXTENSION  5) SHA_EXT 
+#                            1)ARCH         2)OS           3)TS_OR_TAG    4)EXTENSION 5) SHA_EXT 
   regex="OpenJDK[a-zA-Z0-9]+_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+).(tar.gz|zip)(.sha256.txt)?";
   echo "Processing $file";
   if [[ $file =~ $regex ]]; 
   then 
     ARCH=${BASH_REMATCH[1]};
     OS=${BASH_REMATCH[2]};
-    TS_TAG=${BASH_REMATCH[3]};
+    TS_OR_TAG=${BASH_REMATCH[3]};
     EXTENSION=${BASH_REMATCH[4]};
     SHA_EXT=${BASH_REMATCH[5]};
-    echo "version:${VERSION} arch:${ARCH} os:${OS} timestampOrTag:${TS_TAG} extension:${EXTENSION} sha_ext:${SHA_EXT}"; 
+    echo "version:${VERSION} arch:${ARCH} os:${OS} timestampOrTag:${TS_OR_TAG} extension:${EXTENSION} sha_ext:${SHA_EXT}"; 
   fi
   if [ "$EXTENSION" == "zip" -a "$SHA_EXT" == ".sha256.txt" ]; 
   then
@@ -54,7 +54,7 @@ do
     if [ "${REPO}" == "releases" ]; then
       sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXTENSION}/g" $file
     else
-      sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}/g" $file
+      sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_OR_TAG}.${EXTENSION}/g" $file
     fi
   fi
   if [ "$SHA_EXT" == ".sha256.txt" ]; 
@@ -62,13 +62,13 @@ do
     if [ "${REPO}" == "releases" ]; then
       mv $file "Open${VERSION}_${ARCH}_${OS}_${TAG}${SHA_EXT}"
     else
-      mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}${SHA_EXT}"
+      mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_OR_TAG}${SHA_EXT}"
     fi
   else
     if [ "${REPO}" == "releases" ]; then
       mv $file "Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXTENSION}"
     else    
-      mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_TAG}.${EXTENSION}"
+      mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_OR_TAG}.${EXTENSION}"
     fi
   fi
 done
@@ -77,7 +77,7 @@ files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba'
 if [ "$REPO" == "releases" ]; then
   node upload.js --files $files --tag ${TAG} --description "Official Release of $TAG" --repo $REPO
   elif [ "$REPO" == "nightly" ]; then
-  node upload.js --files $files --tag ${TAG}-${TS_TAG} --description "Nightly Build of $TAG" --repo $REPO
+  node upload.js --files $files --tag ${TS_OR_TAG} --description "Nightly Build of $TAG" --repo $REPO
 fi
 node app.js
 ./sbin/gitUpdate.sh
