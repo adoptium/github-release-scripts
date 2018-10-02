@@ -15,7 +15,8 @@
 
 npm install
 
-versionRegex="[[:digit:]]{2}_[[:digit:]]+|8u[[:digit:]]+-b[[:digit:]]+"
+#             11 style version           | 8 Style                    | 9/10 style
+versionRegex="[[:digit:]]{2}_[[:digit:]]+|8u[[:digit:]]+-b[[:digit:]]+|[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+_[[:digit:]]+"
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
 
 #
