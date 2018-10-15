@@ -47,9 +47,10 @@ do
       mv "${file}" "${newName}"
       mv "${file}.sha256.txt" "${newName}.sha256.txt"
 
-      # Fix checksum file name
-      sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
     fi
+
+    # Fix checksum file name
+    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
 
     FILE_VERSION=${BASH_REMATCH[1]};
     FILE_TYPE=${BASH_REMATCH[2]};
