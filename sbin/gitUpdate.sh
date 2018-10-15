@@ -13,12 +13,13 @@
 # limitations under the License.
 #
 
-if [ "$REPO" == "releases" ]; then
-  git clone git@github.com:AdoptOpenJDK/open"$VERSION"-releases.git
-  rm -rf open"$VERSION"-releases/release.json
-  mv "$VERSION"/releases.json open"$VERSION"-releases/
-  mv "$VERSION"/latest_release.json open"$VERSION"-releases/
-  cd $WORKSPACE/open"$VERSION"-releases
+git clone git@github.com:AdoptOpenJDK/open"$VERSION"-binaries.git
+
+if [ "$RELEASE" == "true" ]; then
+  rm -rf open"$VERSION"-binaries/release.json
+  mv "$VERSION"/releases.json open"$VERSION"-binaries/
+  mv "$VERSION"/latest_release.json open"$VERSION"-binaries/
+  cd $WORKSPACE/open"$VERSION"-binaries
   git add releases.json latest_release.json
   git commit -m "updated releases.json" || echo "nothing to commit"
   if [ `git diff origin/master | wc -l` > 0 ]; then
@@ -26,14 +27,11 @@ if [ "$REPO" == "releases" ]; then
   else
     echo "releases already up to date"
   fi
-fi
-
-if [ "$REPO" == "nightly" ]; then
-  git clone git@github.com:AdoptOpenJDK/open"$VERSION"-nightly.git
-  rm -rf open"$VERSION"-nightly/nightly.json
-  mv "$VERSION"/nightly.json open"$VERSION"-nightly/
-  mv "$VERSION"/latest_nightly.json open"$VERSION"-nightly/
-  cd $WORKSPACE/open"$VERSION"-nightly
+else
+  rm -rf open"$VERSION"-binaries/nightly.json
+  mv "$VERSION"/nightly.json open"$VERSION"-binaries/
+  mv "$VERSION"/latest_nightly.json open"$VERSION"-binaries/
+  cd $WORKSPACE/open"$VERSION"-binaries
   git add nightly.json latest_nightly.json
   git commit -m "updated nightly.json" || echo "nothing to commit"
   if [ `git diff origin/master | wc -l` > 0 ]; then

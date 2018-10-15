@@ -1,26 +1,32 @@
-var GitHub = require('github-api');
-var fs = require('fs')
-var mkdirp = require('mkdirp');
+const GitHub = require('github-api');
+const fs = require('fs')
+const mkdirp = require('mkdirp');
+const _ = require('underscore');
 
 // basic auth
-var gh = new GitHub({
+const gh = new GitHub({
   token: process.env['GITHUB_TOKEN']
 });
 
-//var AdoptOpenJDK = gh.getOrganization('AdoptOpenJDK');
-var releases = gh.getRepo('AdoptOpenJDK', 'open' + process.env['VERSION'] + '-releases');
-var nightly = gh.getRepo('AdoptOpenJDK', 'open' + process.env['VERSION'] + '-nightly');
+const repo = gh.getRepo('AdoptOpenJDK', 'open' + process.env['VERSION'] + '-binaries');
 
 mkdirp(process.env['VERSION'], function (err) {
-    if (err) console.error(err)
+  if (err) console.error(err)
 });
 
-releases.listReleases(function(err, result) {
-  fs.writeFileSync(process.env['VERSION'] + '/releases.json', JSON.stringify(result, null, 2))
-  fs.writeFileSync(process.env['VERSION'] + '/latest_release.json', JSON.stringify(result[0], null, 2))
-});
+repo.listReleases(function (err, result) {
 
-nightly.listReleases(function(err, result) {
-  fs.writeFileSync(process.env['VERSION'] + '/nightly.json', JSON.stringify(result, null, 2))
-  fs.writeFileSync(process.env['VERSION'] + '/latest_nightly.json', JSON.stringify(result[0], null, 2))
+  const release = process.env['RELEASE'] === "true";
+  console.log("Release: " + release + " " + process.env['RELEASE']);
+
+  const filteredResult = _.where(result, {prerelease: !release});
+
+  //TODO: Remove these files as they should not be needed, if you want release info use the API
+  if (release) {
+    fs.writeFileSync(process.env['VERSION'] + '/releases.json', JSON.stringify(filteredResult, null, 2));
+    fs.writeFileSync(process.env['VERSION'] + '/latest_release.json', JSON.stringify(filteredResult[0], null, 2));
+  } else {
+    fs.writeFileSync(process.env['VERSION'] + '/nightly.json', JSON.stringify(filteredResult, null, 2))
+    fs.writeFileSync(process.env['VERSION'] + '/latest_nightly.json', JSON.stringify(filteredResult[0], null, 2))
+  }
 });

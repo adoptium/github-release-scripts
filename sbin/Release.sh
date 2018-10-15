@@ -13,71 +13,71 @@
 # limitations under the License.
 #
 
-# Sanity checks ...
-if [ ! "${REPO}" == "nightly" -a ! "${REPO}" == "releases" ]; then
-   echo REPO environment variable should be set to nightly or releases - aborting
-   exit 1
-fi
-if [ "${REPO}" == "releases" -a -z "$TAG" ]; then
-  echo Release build requested, but no TAG variable in the environment
-  exit 1
-fi
-if [ -z "${VERSION}" ]; then
-  echo 'VERSION not specified - should be JDKn[-VARIANT] e.g. JDK8 or JDK11-OPENJ9'
-  exit 1
-fi
-
 npm install
-# Expect a naming convention for build artifacts to follow this pattern:
-# OpenJDK<version>_<arch>_<os>_<timestampOrTag>.<extension>
-# Examples: OpenJDK8_x64_Windows_201813060547.zip, 
-#           OpenJDK8_x64_LinuxLH_201813060547.tar.gz, 
-#           OpenJDK10_aarch64_Linux_201813060547.tar.gz.sha256.txt,
-#           OpenJDKamber_x64_Linux_201813061304.tar.gz	
+
+#             11 style version           | 8 Style                    | 9/10 style
+versionRegex="[[:digit:]]{2}_[[:digit:]]+|8u[[:digit:]]+-b[[:digit:]]+|[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+_[[:digit:]]+"
+timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
+
+#
+#      OpenJDK 8U_             -jdk         x64_           Linux_         hotspot_         2018-06-15-10-10                       .tar.gz
+#      OpenJDK 11_             -jdk         x64_           Linux_         hotspot_         11_28                                  .tar.gz
+regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip)";
+regexArchivesOnly="${regex}$";
+
+
+# Date format is YYYY-MM-DD-hh-mm, i.e 2018-06-15-10-10.
+# So files will look like:
+#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz
+#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz.sha256.txt
+#  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz
+#  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz.sha256.txt
+
+TIMESTAMP="$(date -u +'%Y-%m-%d-%H-%M')"
+
+# Rename to ensure a consistent timestamp across release
 for file in OpenJDK*
 do
-#                            1)ARCH         2)OS           3)TS_OR_TAG    4)EXTENSION 5) SHA_EXT 
-  regex="OpenJDK[a-zA-Z0-9]+_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+).(tar.gz|zip)(.sha256.txt)?";
   echo "Processing $file";
-  if [[ $file =~ $regex ]]; 
-  then 
-    ARCH=${BASH_REMATCH[1]};
-    OS=${BASH_REMATCH[2]};
-    TS_OR_TAG=${BASH_REMATCH[3]};
-    EXTENSION=${BASH_REMATCH[4]};
-    SHA_EXT=${BASH_REMATCH[5]};
-    echo "version:${VERSION} arch:${ARCH} os:${OS} timestampOrTag:${TS_OR_TAG} extension:${EXTENSION} sha_ext:${SHA_EXT}"; 
-  fi
-  if [ "$EXTENSION" == "zip" -a "$SHA_EXT" == ".sha256.txt" ]; 
+
+  if [[ $file =~ $regexArchivesOnly ]];
   then
-    FILENAME=`cat $file | awk  '{print $2}'`
-    if [ "${REPO}" == "releases" ]; then
-      sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXTENSION}/g" $file
-    else
-      sed -i -e "s/${FILENAME}/Open${VERSION}_${ARCH}_${OS}_${TS_OR_TAG}.${EXTENSION}/g" $file
+    newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
+
+    if [ "${file}" != "${newName}" ]; then
+      # Rename archive and checksum file with now timestamp
+      echo "Renaming ${file} to ${newName}"
+      mv "${file}" "${newName}"
+      mv "${file}.sha256.txt" "${newName}.sha256.txt"
+
     fi
-  fi
-  if [ "$SHA_EXT" == ".sha256.txt" ]; 
-  then
-    if [ "${REPO}" == "releases" ]; then
-      mv $file "Open${VERSION}_${ARCH}_${OS}_${TAG}${SHA_EXT}"
-    else
-      mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_OR_TAG}${SHA_EXT}"
-    fi
-  else
-    if [ "${REPO}" == "releases" ]; then
-      mv $file "Open${VERSION}_${ARCH}_${OS}_${TAG}.${EXTENSION}"
-    else    
-      mv $file "Open${VERSION}_${ARCH}_${OS}_${TS_OR_TAG}.${EXTENSION}"
-    fi
+
+    # Fix checksum file name
+    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
+
+    FILE_VERSION=${BASH_REMATCH[1]};
+    FILE_TYPE=${BASH_REMATCH[2]};
+    FILE_ARCH=${BASH_REMATCH[3]};
+    FILE_OS=${BASH_REMATCH[4]};
+    FILE_VARIANT=${BASH_REMATCH[5]};
+    FILE_TS_OR_VERSION=${BASH_REMATCH[6]};
+    FILE_EXTENSION=${BASH_REMATCH[7]};
+
+    echo "version:${FILE_VERSION} type: ${FILE_TYPE} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestamp or version:${FILE_TS_OR_VERSION} timestamp:${TIMESTAMP} extension:${FILE_EXTENSION}";
   fi
 done
 
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
-if [ "$REPO" == "releases" ]; then
-  node upload.js --files $files --tag ${TAG} --description "Official Release of $TAG" --repo $REPO
-  elif [ "$REPO" == "nightly" ]; then
-  node upload.js --files $files --tag ${TS_OR_TAG} --description "Nightly Build of $TAG" --repo $REPO
+
+echo "Release: $RELEASE"
+if [ "$RELEASE" == "true" ]; then
+  if [ -z "${TAG}" ]; then
+    TAG="${TIMESTAMP}"
+  fi
+  node upload.js --files $files --tag ${TAG} --description "Official Release of $TAG" --release "$RELEASE"
+else
+  node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --release "$RELEASE"
 fi
+
 node app.js
 ./sbin/gitUpdate.sh
