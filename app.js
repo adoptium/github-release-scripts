@@ -8,7 +8,6 @@ const gh = new GitHub({
   token: process.env['GITHUB_TOKEN']
 });
 
-//var AdoptOpenJDK = gh.getOrganization('AdoptOpenJDK');
 const repo = gh.getRepo('AdoptOpenJDK', 'open' + process.env['VERSION'] + '-binaries');
 
 mkdirp(process.env['VERSION'], function (err) {
@@ -22,6 +21,7 @@ repo.listReleases(function (err, result) {
 
   const filteredResult = _.where(result, {prerelease: !release});
 
+  //TODO: Remove these files as they should not be needed, if you want release info use the API
   if (release) {
     fs.writeFileSync(process.env['VERSION'] + '/releases.json', JSON.stringify(filteredResult, null, 2));
     fs.writeFileSync(process.env['VERSION'] + '/latest_release.json', JSON.stringify(filteredResult[0], null, 2));
