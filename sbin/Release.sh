@@ -22,7 +22,7 @@ timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:d
 #
 #      OpenJDK 8U_             -jdk         x64_           Linux_         hotspot_         2018-06-15-10-10                       .tar.gz
 #      OpenJDK 11_             -jdk         x64_           Linux_         hotspot_         11_28                                  .tar.gz
-regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip)";
+regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip)";
 regexArchivesOnly="${regex}$";
 
 
