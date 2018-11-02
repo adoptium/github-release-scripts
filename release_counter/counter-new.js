@@ -24,7 +24,8 @@ rimraf('./releases', function() {
             name = filename.split('_');
             arch = name[1]
             os = name[2]
-            console.log(os + "-" + arch + ": " + release[version].assets[attributename].download_count);
+            variant = name[3]
+            console.log(os + "-" + arch + "-" + variant + ": " + release[version].assets[attributename].download_count);
             total += release[version].assets[attributename].download_count
             totalEver += release[version].assets[attributename].download_count
           }
