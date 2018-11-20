@@ -20,7 +20,6 @@ if [ $0 != 0 ]; then
     git add -f sitemap.xml
     git add -f robots.txt
     git add -f src/handlebars/partials/header.handlebars
-    git add -f src/handlebars/banner.handlebars
     # Revert the handlebars file as we now have the build html file
     # Commit these files to Master, then retrieve the entire repo
     # (including build output) in the gh-pages branch:
