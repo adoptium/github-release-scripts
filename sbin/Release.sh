@@ -59,7 +59,7 @@ do
     FILE_OS=${BASH_REMATCH[4]};
     FILE_VARIANT=${BASH_REMATCH[5]};
     FILE_TS_OR_VERSION=${BASH_REMATCH[6]};
-    FILE_EXTENSION=${BASH_REMATCH[7]};
+    FILE_EXTENSION=${BASH_REMATCH[8]};
 
     echo "version:${FILE_VERSION} type: ${FILE_TYPE} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestamp or version:${FILE_TS_OR_VERSION} timestamp:${TIMESTAMP} extension:${FILE_EXTENSION}";
   fi
