@@ -22,7 +22,7 @@ timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:d
 # IF YOU ARE MODIFYING THIS THEN THE FILE MATCHING IS PROBABLY WRONG, MAKE SURE openjdk-api, v2.js IS UPDATED TOO
 #      OpenJDK 8U_             -jdk        x64_           Linux_         hotspot_         2018-06-15-10-10                .tar.gz
 #      OpenJDK 11_             -jdk        x64_           Linux_         hotspot_         11_28                           .tar.gz
-regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip)";
+regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip|pkg|msi)";
 regexArchivesOnly="${regex}$";
 
 # Date format is YYYY-MM-DD-hh-mm, i.e 2018-06-15-10-10.
@@ -46,12 +46,16 @@ do
       # Rename archive and checksum file with new timestamp
       echo "Renaming ${file} to ${newName}"
       mv "${file}" "${newName}"
-      mv "${file}.sha256.txt" "${newName}.sha256.txt"
-
+      # Skip sha256 on installer
+      if [ "$file" != *.msi ] && [ "$file" != *.pkg ]; then
+        mv "${file}.sha256.txt" "${newName}.sha256.txt"
+      fi
     fi
 
-    # Fix checksum file name
-    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
+    if [ "$file" != *.msi ] && [ "$file" != *.pkg ]; then
+      # Fix checksum file name
+      sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
+    fi
 
     FILE_VERSION=${BASH_REMATCH[1]};
     FILE_TYPE=${BASH_REMATCH[2]};
@@ -65,7 +69,7 @@ do
   fi
 done
 
-files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 
 echo "Release: $RELEASE"
 if [ "$RELEASE" == "true" ]; then
