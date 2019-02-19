@@ -38,6 +38,7 @@ publishRelease({
   prerelease: !release,
   reuseRelease: true,
   reuseDraftOnly: false,
+  skipIfPublished: true,
   assets: options.files,
 }, function(err, release) {
   if (err) {
