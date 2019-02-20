@@ -46,16 +46,11 @@ do
       # Rename archive and checksum file with new timestamp
       echo "Renaming ${file} to ${newName}"
       mv "${file}" "${newName}"
-      # Skip sha256 on installer
-      if [ "$file" != *.msi ] && [ "$file" != *.pkg ]; then
-        mv "${file}.sha256.txt" "${newName}.sha256.txt"
-      fi
+      mv "${file}.sha256.txt" "${newName}.sha256.txt"
     fi
 
-    if [ "$file" != *.msi ] && [ "$file" != *.pkg ]; then
-      # Fix checksum file name
-      sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
-    fi
+    # Fix checksum file name
+    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
 
     FILE_VERSION=${BASH_REMATCH[1]};
     FILE_TYPE=${BASH_REMATCH[2]};
