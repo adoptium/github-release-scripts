@@ -10,12 +10,11 @@
     "command-line-args": "^5.0.2",
     "github-api": "^3.0.0",
     "mkdirp": "^0.5.1",
-    "npm": "^6.6.0",
     "publish-release": "^1.6.0",
     "underscore": "^1.9.1"
   },
   "devDependencies": {
-    "eslint": "^5.7.0",
-    "nodemon": "^1.18.4"
+    "eslint": "^5.15.0",
+    "nodemon": "^1.18.10"
   }
 }
