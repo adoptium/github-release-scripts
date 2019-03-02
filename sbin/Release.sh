@@ -15,13 +15,14 @@
 
 npm install
 
-#             11 style version           | 8 Style                    | 9/10 style
-versionRegex="[[:digit:]]{2}_[[:digit:]]+|8u[[:digit:]]+-b[[:digit:]]+|[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+_[[:digit:]]+"
+#             11 style version           | 8 Style                     | 9/10 style
+versionRegex="[[:digit:]]{2}_[[:digit:]]+|8u[[:digit:]]+-?(b[[:digit:]]+|ga)|[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+_[[:digit:]]+"
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
 
+# IF YOU ARE MODIFYING THIS THEN THE FILE MATCHING IS PROBABLY WRONG, MAKE SURE openjdk-api, v2.js IS UPDATED TOO
 #      OpenJDK 8U_             -jdk        x64_           Linux_         hotspot_         2018-06-15-10-10                .tar.gz
 #      OpenJDK 11_             -jdk        x64_           Linux_         hotspot_         11_28                           .tar.gz
-regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip)";
+regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip|pkg|msi)";
 regexArchivesOnly="${regex}$";
 
 # Date format is YYYY-MM-DD-hh-mm, i.e 2018-06-15-10-10.
@@ -46,7 +47,6 @@ do
       echo "Renaming ${file} to ${newName}"
       mv "${file}" "${newName}"
       mv "${file}.sha256.txt" "${newName}.sha256.txt"
-
     fi
 
     # Fix checksum file name
@@ -58,13 +58,13 @@ do
     FILE_OS=${BASH_REMATCH[4]};
     FILE_VARIANT=${BASH_REMATCH[5]};
     FILE_TS_OR_VERSION=${BASH_REMATCH[6]};
-    FILE_EXTENSION=${BASH_REMATCH[7]};
+    FILE_EXTENSION=${BASH_REMATCH[8]};
 
     echo "version:${FILE_VERSION} type: ${FILE_TYPE} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestamp or version:${FILE_TS_OR_VERSION} timestamp:${TIMESTAMP} extension:${FILE_EXTENSION}";
   fi
 done
 
-files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 
 echo "Release: $RELEASE"
 if [ "$RELEASE" == "true" ]; then
@@ -77,4 +77,3 @@ else
 fi
 
 node app.js
-./sbin/gitUpdate.sh

@@ -9,7 +9,7 @@ cd $PR_NUMBER
 git fetch origin $GIT_REMOTE_REF:testBranch
 git checkout testBranch
 
-cat >"src/handlebars/banner.handlebars" <<-EOF
+cat >>"src/handlebars/partials/header.handlebars" <<-EOF
 <div class="alert align-center">
  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
  This is a staging server, currently hosting <a class="light-link" href="https://github.com/AdoptOpenJDK/openjdk-website/pull/$PR_NUMBER"><var>PR $PR_NUMBER</var></a>
@@ -28,8 +28,6 @@ if [ $0 != 0 ]; then
     git add -f *.html
     git add -f sitemap.xml
     git add -f robots.txt
-    # Revert the handlebars file as we now have the build html file
-    git checkout -- src/handlebars/banner.handlebars
     # Commit these files to Master, then retrieve the entire repo
     # (including build output) in the gh-pages branch:
     git commit -m "Add built files"
