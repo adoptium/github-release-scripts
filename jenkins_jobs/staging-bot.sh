@@ -3,11 +3,11 @@
 # Check PR's already on staging
 cd staging
 for d in */ ; do
-	number=${d%/}
+    number=${d%/}
     echo checking "$number"
     STATUS=$(curl "https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls/$number" | grep "\"state\":" | awk '{print $2}')
     if [ "$STATUS" == '"closed",' ]; then
-    	echo "removing $number"
+        echo "removing $number"
         rm -rf "$number"
         git add .
         git commit -m "remove $number from staging"
@@ -22,11 +22,11 @@ curl https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls\?state\=ope
 rm -rf *.properties
 cat openPR.txt | while read line
 do
-  	echo "Checking PR: $line"
+    echo "Checking PR: $line"
     if [ -d "$WORKSPACE/staging/$line" ]; then
-		echo "already staged"
+        echo "already staged"
     else
-    	echo "staging PR: $line"
+        echo "staging PR: $line"
         echo "PR_NUMBER=$line" > $line.properties
-	fi
+    fi
 done
