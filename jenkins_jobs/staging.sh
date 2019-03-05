@@ -22,23 +22,22 @@ npm install
 gulp build
 # If the build is successful...
 if [ $0 != 0 ]; then
-    git add src/handlebars/partials/header.handlebars
-    # Force-add the ignored build output files:
-    git add -f dist
+	git add src/handlebars/partials/header.handlebars
+	# Force-add the ignored build output files:
+	git add -f dist
     git add -f *.html
     git add -f sitemap.xml
     git add -f robots.txt
     # Commit these files to Master, then retrieve the entire repo
     # (including build output) in the gh-pages branch:
     git commit -m "Add built files"
-    git checkout gh-pages
+	git checkout gh-pages
     git reset --hard testBranch
-    # Delete every file except for .html files, then every dir except for /dist
-    # and /docs:
+    # Delete every file except for .html files, then every dir except for /dist:
     # (Both of these act only on the root dir - not recursively searching dirs)
-    find . -type f ! -name '*.html' -maxdepth 1 -mindepth 1 -delete
-    find . -type d -not -name 'dist' -not -name '.git' -not name 'docs' -maxdepth 1 -mindepth 1 -exec rm -rf {} \;
-    # After this bulk-delete, copy across some other necessary files from the master branch:
+	find . -type f ! -name '*.html' -maxdepth 1 -mindepth 1 -delete
+    find . -type d -not -name 'dist' -not -name '.git' -maxdepth 1 -mindepth 1 -exec rm -rf {} \;
+	# After this bulk-delete, copy across some other necessary files from the master branch:
 cat >"CNAME" <<-EOF
 staging.adoptopenjdk.net
 EOF
@@ -53,16 +52,16 @@ EOF
     #git checkout testBranch -- robots.txt
 
     echo "These files are ready to be moved onto the production web server:"
-    ls
+	ls
 
     # Check that the essential files (/dist and .html) exist before pushing:
     if [ ! -d dist ]; then
-      echo "/dist does not exist. Exiting."
-    exit 1
+    	echo "/dist does not exist. Exiting."
+		exit 1
     fi
     if [ ! -f index.html ]; then
-      echo ".html files do not exist. Exiting."
-      exit 1
+   		echo ".html files do not exist. Exiting."
+		exit 1
     fi
     rm -rf .git
     cd $WORKSPACE
@@ -71,10 +70,10 @@ EOF
     cd openjdk-website-staging
     # Add and commit everything in the gh-pages branch, then force push to make it live:
     git add .
-  git commit -m "Remove development files"
-  git push origin gh-pages
+	git commit -m "Remove development files"
+	git push origin gh-pages
   message="Now on staging server [here](https://staging.adoptopenjdk.net/$PR_NUMBER)."
   curl -u adoptopenjdk-github-bot:$TOKEN --data '{"body": "'"$message"'"}' https://api.github.com/repos/AdoptOpenJDK/openjdk-website/issues/$PR_NUMBER/comments
 else
-  echo "Build or lint failed."
+	echo "Build or lint failed."
 fi
