@@ -28,7 +28,7 @@ if [ $0 != 0 ]; then
     git reset --hard master
     # Delete every file except for .html files, then every dir except for /dist:
     # (Both of these act only on the root dir - not recursively searching dirs)
-	find . -type f ! -name '*.html' -maxdepth 1 -mindepth 1 -delete
+    find . -type f ! -name '*.html' ! -name '*.pdf' -maxdepth 1 -mindepth 1  -delete
     find . -type d -not -name 'dist' -not -name '.git' -maxdepth 1 -mindepth 1 -exec rm -rf {} \;
 	# After this bulk-delete, copy across some other necessary files from the master branch:
 
