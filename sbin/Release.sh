@@ -25,13 +25,15 @@ timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:d
 regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip|pkg|msi)";
 regexArchivesOnly="${regex}$";
 
-# Date format is YYYY-MM-DD-hh-mm, i.e 2018-06-15-10-10.
-# So files will look like:
-#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz
-#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz.sha256.txt
-#  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz
-#  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz.sha256.txt
-TIMESTAMP="$(date -u +'%Y-%m-%d-%H-%M')"
+if [ -z "${TAG}" ]; then
+    echo "Must have a tag set"
+    exit 1
+fi
+
+if [ "$RELEASE" != "true" ] && [ -z "${TIMESTAMP}" ]; then
+    echo "Nightly must have a TIMESTAMP set"
+    exit 1
+fi
 
 # Rename to ensure a consistent timestamp across release
 for file in OpenJDK*
@@ -67,13 +69,13 @@ done
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 
 echo "Release: $RELEASE"
+
 if [ "$RELEASE" == "true" ]; then
-  if [ -z "${TAG}" ]; then
-    TAG="${TIMESTAMP}"
-  fi
-  node upload.js --files $files --tag ${TAG} --description "Official Release of $TAG" --release "$RELEASE"
+  description="Official Release of $TAG"
 else
-  node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --release "$RELEASE"
+  description="Nightly Build of $TAG"
 fi
+
+node upload.js --files $files --tag ${TAG} --description "${description}" --release "$RELEASE"
 
 node app.js
