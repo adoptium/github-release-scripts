@@ -36,12 +36,12 @@ class UploadAdoptReleaseFiles {
     private GHRepository getRepo() {
         String token = System.getenv("GITHUB_TOKEN")
         if (token == null) {
-            System.err.println("Could not find GITHUB_TOKEN");
-            System.exit(1);
+            System.err.println("Could not find GITHUB_TOKEN")
+            System.exit(1)
         }
 
-        GitHub github = GitHub.connectUsingOAuth(token);
-        return github.getRepository("AdoptOpenJDK/openjdk${version}-binaries")
+        GitHub github = GitHub.connectUsingOAuth(token)
+        return github.getRepository("AdoptOpenJDK/open${version}-binaries")
     }
 
     private void uploadFiles(GHRelease release) {
@@ -50,8 +50,12 @@ class UploadAdoptReleaseFiles {
             // Delete existing asset
             assets
                     .find({ it.name == file.name })
-                    .each({ GHAsset existing -> existing.delete() })
+                    .each { GHAsset existing ->
+                println("Updating ${existing.name}")
+                existing.delete()
+            }
 
+            println("Uploading ${file.name}")
             release.uploadAsset(file, Files.probeContentType(file.toPath()))
         }
     }
