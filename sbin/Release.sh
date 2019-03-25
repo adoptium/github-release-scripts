@@ -76,6 +76,7 @@ else
   description="Nightly Build of $TAG"
 fi
 
-node upload.js --files $files --tag ${TAG} --description "${description}" --release "$RELEASE"
-
-node app.js
+cd adopt-github-release
+chmod +x gradlew
+./gradlew
+./gradlew run --args="--tag \"${TAG}\" --description \"${description}\" --release \"$RELEASE\" $files"
