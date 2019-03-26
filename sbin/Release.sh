@@ -13,8 +13,6 @@
 # limitations under the License.
 #
 
-npm install
-
 #             11 style version           | 8 Style                     | 9/10 style
 versionRegex="[[:digit:]]{2}_[[:digit:]]+|8u[[:digit:]]+-?(b[[:digit:]]+|ga)|[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+_[[:digit:]]+"
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
@@ -52,7 +50,8 @@ do
     fi
 
     # Fix checksum file name
-    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
+    strippedFileName=$(echo "${newName}" | sed -r "s/.+\\///g")
+    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${strippedFileName}/g" "${newName}.sha256.txt"
 
     FILE_VERSION=${BASH_REMATCH[1]};
     FILE_TYPE=${BASH_REMATCH[2]};
@@ -70,12 +69,14 @@ files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi} | sed -e ':a' -e 'N'
 
 echo "Release: $RELEASE"
 
+RELEASE_OPTION=""
 if [ "$RELEASE" == "true" ]; then
   description="Official Release of $TAG"
+  RELEASE_OPTION="--release"
 else
   description="Nightly Build of $TAG"
 fi
 
-node upload.js --files $files --tag ${TAG} --description "${description}" --release "$RELEASE"
-
-node app.js
+cd adopt-github-release
+chmod +x gradlew
+./gradlew run --args="--version \"${VERSION}\" --tag \"${TAG}\" --description \"${description}\" $RELEASE_OPTION $files"
