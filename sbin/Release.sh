@@ -40,7 +40,7 @@ do
 
   if [[ $file =~ $regexArchivesOnly ]];
   then
-    newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
+    newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/" | sed -r "s/.+\\///g")
 
     if [ "${file}" != "${newName}" ]; then
       # Rename archive and checksum file with new timestamp

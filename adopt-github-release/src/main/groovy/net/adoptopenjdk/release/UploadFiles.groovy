@@ -80,8 +80,7 @@ class UploadAdoptReleaseFiles {
 static void main(String[] args) {
     OptionAccessor options = parseArgs(args)
 
-    List<File> files
-    files = options.arguments()
+    List<File> files = options.arguments()
             .collect { new File(it) }
 
     new UploadAdoptReleaseFiles(
