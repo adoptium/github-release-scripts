@@ -40,7 +40,7 @@ do
 
   if [[ $file =~ $regexArchivesOnly ]];
   then
-    newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/" | sed -r "s/.+\\///g")
+    newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
     if [ "${file}" != "${newName}" ]; then
       # Rename archive and checksum file with new timestamp
@@ -50,7 +50,8 @@ do
     fi
 
     # Fix checksum file name
-    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
+    strippedFileName=$(echo "${newName}" | sed -r "s/.+\\///g")
+    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${strippedFileName}/g" "${newName}.sha256.txt"
 
     FILE_VERSION=${BASH_REMATCH[1]};
     FILE_TYPE=${BASH_REMATCH[2]};
