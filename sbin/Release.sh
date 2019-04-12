@@ -79,4 +79,4 @@ fi
 
 cd adopt-github-release
 chmod +x gradlew
-./gradlew run --args="--version \"${VERSION}\" --tag \"${TAG}\" --description \"${description}\" $RELEASE_OPTION $files"
+GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--version \"${VERSION}\" --tag \"${TAG}\" --description \"${description}\" $RELEASE_OPTION $files"
