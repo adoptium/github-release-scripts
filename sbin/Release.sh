@@ -41,6 +41,7 @@ do
   then
     newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
+    # TODO Remove this post 8u212 release as this is a one off hack to fix a bad naming job
     newName=$(echo "${newName}" | sed 's/jdk8u212-b03_openj9-0.14.0/8u212b03_openj9-0.14.0/g')
 
     if [ "${file}" != "${newName}" ]; then
