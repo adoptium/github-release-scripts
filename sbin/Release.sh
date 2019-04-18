@@ -42,6 +42,8 @@ do
   then
     newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
+    newName=$(echo "${newName}" | sed 's/jdk8u212-b03_openj9-0.14.0/8u212b03_openj9-0.14.0/g')
+
     if [ "${file}" != "${newName}" ]; then
       # Rename archive and checksum file with new timestamp
       echo "Renaming ${file} to ${newName}"
