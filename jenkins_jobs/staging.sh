@@ -21,7 +21,7 @@ npm install --global gulp-cli
 npm install
 gulp build
 # If the build is successful...
-if [ $0 != 0 ]; then
+if [ $? == 0 ]; then
     git add src/handlebars/partials/header.handlebars
     # Force-add the ignored build output files:
     git add -f dist
@@ -36,8 +36,8 @@ if [ $0 != 0 ]; then
     # Delete every file except for .html files, then every dir except for /dist
     # and /docs:
     # (Both of these act only on the root dir - not recursively searching dirs)
-    find . -type f ! -name '*.html' -maxdepth 1 -mindepth 1 -delete
-    find . -type d -not -name 'dist' -not -name '.git' -not name 'docs' -maxdepth 1 -mindepth 1 -exec rm -rf {} \;
+    find . -type f ! -name '*.html' ! -name '*.pdf' -maxdepth 1 -mindepth 1  -delete
+    find . -type d -not -name 'dist' -not -name '.git' -maxdepth 1 -mindepth 1 -exec rm -rf {} \;
     # After this bulk-delete, copy across some other necessary files from the master branch:
 cat >"CNAME" <<-EOF
 staging.adoptopenjdk.net

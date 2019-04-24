@@ -13,25 +13,23 @@
 # limitations under the License.
 #
 
-npm install
-
-#             11 style version           | 8 Style                     | 9/10 style
-versionRegex="[[:digit:]]{2}_[[:digit:]]+|8u[[:digit:]]+-?(b[[:digit:]]+|ga)|[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+_[[:digit:]]+"
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
 
 # IF YOU ARE MODIFYING THIS THEN THE FILE MATCHING IS PROBABLY WRONG, MAKE SURE openjdk-api, v2.js IS UPDATED TOO
 #      OpenJDK 8U_             -jdk        x64_           Linux_         hotspot_         2018-06-15-10-10                .tar.gz
 #      OpenJDK 11_             -jdk        x64_           Linux_         hotspot_         11_28                           .tar.gz
-regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:alnum:]]+).*_($timestampRegex|$versionRegex).(tar.gz|zip|pkg|msi)";
+regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:alnum:]]+).*\.(tar\.gz|zip|pkg|msi)";
 regexArchivesOnly="${regex}$";
 
-# Date format is YYYY-MM-DD-hh-mm, i.e 2018-06-15-10-10.
-# So files will look like:
-#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz
-#  OpenJDK8U_x64_Linux_hotspot_2018-06-15-10-10.tar.gz.sha256.txt
-#  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz
-#  OpenJDK8U_x64_Linux_openj9_2018-06-15-10-10.tar.gz.sha256.txt
-TIMESTAMP="$(date -u +'%Y-%m-%d-%H-%M')"
+if [ -z "${TAG}" ]; then
+    echo "Must have a tag set"
+    exit 1
+fi
+
+if [ "$RELEASE" != "true" ] && [ -z "${TIMESTAMP}" ]; then
+    echo "Nightly must have a TIMESTAMP set"
+    exit 1
+fi
 
 # Rename to ensure a consistent timestamp across release
 for file in OpenJDK*
@@ -42,15 +40,20 @@ do
   then
     newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
+    # TODO Remove this post 8u212 release as this is a one off hack to fix a bad naming job
+    newName=$(echo "${newName}" | sed 's/jdk8u212-b03/8u212b03/g')
+
     if [ "${file}" != "${newName}" ]; then
       # Rename archive and checksum file with new timestamp
       echo "Renaming ${file} to ${newName}"
       mv "${file}" "${newName}"
       mv "${file}.sha256.txt" "${newName}.sha256.txt"
+      mv "${file}.json" "${newName}.json"
     fi
 
     # Fix checksum file name
-    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${newName}/g" "${newName}.sha256.txt"
+    strippedFileName=$(echo "${newName}" | sed -r "s/.+\\///g")
+    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${strippedFileName}/g" "${newName}.sha256.txt"
 
     FILE_VERSION=${BASH_REMATCH[1]};
     FILE_TYPE=${BASH_REMATCH[2]};
@@ -67,13 +70,15 @@ done
 files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 
 echo "Release: $RELEASE"
+
+RELEASE_OPTION=""
 if [ "$RELEASE" == "true" ]; then
-  if [ -z "${TAG}" ]; then
-    TAG="${TIMESTAMP}"
-  fi
-  node upload.js --files $files --tag ${TAG} --description "Official Release of $TAG" --release "$RELEASE"
+  description="Official Release of $TAG"
+  RELEASE_OPTION="--release"
 else
-  node upload.js --files $files --tag ${TAG}-${TIMESTAMP} --description "Nightly Build of $TAG" --release "$RELEASE"
+  description="Nightly Build of $TAG"
 fi
 
-node app.js
+cd adopt-github-release
+chmod +x gradlew
+GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--version \"${VERSION}\" --tag \"${TAG}\" --description \"${description}\" $RELEASE_OPTION $files"
