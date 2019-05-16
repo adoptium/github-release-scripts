@@ -3,12 +3,11 @@ package net.adoptopenjdk.release
 import groovy.cli.picocli.CliBuilder
 import groovy.cli.picocli.OptionAccessor
 import groovy.transform.CompileStatic
-import org.kohsuke.github.GHAsset
-import org.kohsuke.github.GHRelease
-import org.kohsuke.github.GHRepository
-import org.kohsuke.github.GitHub
+import org.kohsuke.github.*
+import org.kohsuke.github.extras.ImpatientHttpConnector
 
 import java.nio.file.Files
+import java.util.concurrent.TimeUnit
 
 @CompileStatic
 class UploadAdoptReleaseFiles {
@@ -41,6 +40,16 @@ class UploadAdoptReleaseFiles {
         }
 
         GitHub github = GitHub.connectUsingOAuth(token)
+
+        github
+                .setConnector(new ImpatientHttpConnector(new HttpConnector() {
+                    HttpURLConnection connect(URL url) throws IOException {
+                        return (HttpURLConnection) url.openConnection()
+                    }
+                },
+                        (int) TimeUnit.SECONDS.toMillis(120),
+                        (int) TimeUnit.SECONDS.toMillis(120)))
+
         return github.getRepository("AdoptOpenJDK/open${version}-binaries")
     }
 
@@ -51,9 +60,9 @@ class UploadAdoptReleaseFiles {
             assets
                     .find({ it.name == file.name })
                     .each { GHAsset existing ->
-                println("Updating ${existing.name}")
-                existing.delete()
-            }
+                        println("Updating ${existing.name}")
+                        existing.delete()
+                    }
 
             println("Uploading ${file.name}")
             release.uploadAsset(file, Files.probeContentType(file.toPath()))
@@ -98,12 +107,12 @@ private OptionAccessor parseArgs(String[] args) {
 
     cliBuilder
             .with {
-        v longOpt: 'version', type: String, args: 1, 'JDK version'
-        t longOpt: 'tag', type: String, args: 1, 'Tag name'
-        d longOpt: 'description', type: String, args: 1, 'Release description'
-        r longOpt: 'release', 'Is a release build'
-        h longOpt: 'help', 'Show usage information'
-    }
+                v longOpt: 'version', type: String, args: 1, 'JDK version'
+                t longOpt: 'tag', type: String, args: 1, 'Tag name'
+                d longOpt: 'description', type: String, args: 1, 'Release description'
+                r longOpt: 'release', 'Is a release build'
+                h longOpt: 'help', 'Show usage information'
+            }
 
     def options = cliBuilder.parse(args)
     if (options.v && options.t && options.d) {
