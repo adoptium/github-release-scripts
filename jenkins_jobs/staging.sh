@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PATH="/home/jenkins/.jenkins/.nvm/versions/node/v6.10.2/bin:$PATH"
+export PATH="/home/jenkins/.jenkins/.nvm/versions/node/v10.16.0/bin:$PATH"
 
 GIT_REMOTE_REF=refs/pull/$PR_NUMBER/head
 git clone https://github.com/AdoptOpenJDK/openjdk-website.git
