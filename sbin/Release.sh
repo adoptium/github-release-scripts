@@ -67,7 +67,7 @@ do
   fi
 done
 
-files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 
 echo "Release: $RELEASE"
 
