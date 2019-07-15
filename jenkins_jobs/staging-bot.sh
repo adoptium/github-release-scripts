@@ -5,7 +5,7 @@ cd staging
 for d in */ ; do
 	number=${d%/}
     echo checking "$number"
-    STATUS=$(curl "https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls/$number" | grep "\"state\":" | awk '{print $2}')
+    STATUS=$(curl "https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls/$number" | grep "\"state\":" | head -n 1 | awk '{print $2}')
     if [ "$STATUS" == '"closed",' ]; then
     	echo "removing $number"
         rm -rf "$number"
