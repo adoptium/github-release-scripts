@@ -40,9 +40,6 @@ do
   then
     newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
-    # TODO Remove this post 11.0.4+11 release as this is a one off hack to fix a bad naming job
-    newName=$(echo "${newName}" | sed 's/_adopt//g')
-
     if [ "${file}" != "${newName}" ]; then
       # Rename archive and checksum file with new timestamp
       echo "Renaming ${file} to ${newName}"
