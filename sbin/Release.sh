@@ -40,9 +40,6 @@ do
   then
     newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
-    # TODO Remove this post 8u212 release as this is a one off hack to fix a bad naming job
-    newName=$(echo "${newName}" | sed 's/jdk8u212-b03/8u212b03/g')
-
     if [ "${file}" != "${newName}" ]; then
       # Rename archive and checksum file with new timestamp
       echo "Renaming ${file} to ${newName}"
@@ -67,7 +64,7 @@ do
   fi
 done
 
-files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
 
 echo "Release: $RELEASE"
 
