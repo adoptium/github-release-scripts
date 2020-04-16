@@ -3,14 +3,19 @@
 # Check PR's already on staging
 cd staging
 for d in */ ; do
-	number=${d%/}
-    echo checking "$number"
-    STATUS=$(curl "https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls/$number" | grep "\"state\":" | head -n 1 | awk '{print $2}')
-    if [[ "$STATUS" == '"closed",' ]]; then
-    	echo "removing $number"
-        rm -rf "$number"
-        git add .
-        git commit -m "remove $number from staging"
+    regx='^[0-9]+$'
+    if [[ $d =~ $regx ]]; then 
+      number=${d%/}
+      echo checking "$number"
+      echo "https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls/$number"
+      STATUS=$(curl "https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls/$number" | grep "\"state\":" | head -n 1 | awk '{print $2}')
+      if [[ "$STATUS" == '"closed",' ]]; then
+        echo "removing $number"
+          rm -rf "$number"
+          git add .
+          git commit -m "remove $number from staging"
+      fi
+      unset STATUS
     fi
 done
 git push origin HEAD:gh-pages
