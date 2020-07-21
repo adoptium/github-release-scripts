@@ -5,8 +5,8 @@ set -x
 cd staging
 for d in */ ; do
     regx='^[0-9]+$'
-    if [[ $d =~ $regx ]]; then 
-      number=${d%/}
+    number=${d%/}
+    if [[ $number =~ $regx ]]; then 
       echo checking "$number"
       echo "https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls/$number"
       STATUS=$(curl "https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls/$number" | grep "\"state\":" | head -n 1 | awk '{print $2}')
