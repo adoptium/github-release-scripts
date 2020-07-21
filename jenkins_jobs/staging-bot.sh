@@ -24,7 +24,7 @@ git push origin HEAD:gh-pages
 # Check for new PR's
 cd $WORKSPACE
 rm -rf openPR.txt
-curl https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls\?state\=open | grep "\"number\":" | awk '{print $2}' | sed 's/,/ /g' > openPR.txt
+curl https://api.github.com/repos/AdoptOpenJDK/openjdk-website/pulls\?state\=open | grep "\"diff_url\":" | awk '{print $2}' |  sed 's/[^0-9]*//g' > openPR.txt
 rm -rf *.properties
 cat openPR.txt | while read line
 do
