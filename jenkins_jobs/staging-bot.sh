@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # Check PR's already on staging
 cd staging
