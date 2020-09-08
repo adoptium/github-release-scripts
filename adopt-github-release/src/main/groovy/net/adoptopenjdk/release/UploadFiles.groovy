@@ -27,12 +27,20 @@ class UploadAdoptReleaseFiles {
     }
 
     void release() {
-        GHRepository repo = getRepo()
-        GHRelease release = getRelease(repo)
-        uploadFiles(release)
+        def grouped = files.groupBy {
+            switch (it.getName()) {
+                case ~/.*dragonwell.*/: "dragonwell"; break;
+                default: "adopt"; break
+            }
+        }
+        grouped.each {(vendor, files) ->
+            GHRepository repo = getRepo(vendor)
+            GHRelease release = getRelease(repo)
+            uploadFiles(release, files)
+        }
     }
 
-    private GHRepository getRepo() {
+    private GHRepository getRepo(String vendor) {
         String token = System.getenv("GITHUB_TOKEN")
         if (token == null) {
             System.err.println("Could not find GITHUB_TOKEN")
@@ -50,10 +58,16 @@ class UploadAdoptReleaseFiles {
                         (int) TimeUnit.SECONDS.toMillis(120),
                         (int) TimeUnit.SECONDS.toMillis(120)))
 
-        return github.getRepository("AdoptOpenJDK/open${version}-binaries")
+        def repoName = "AdoptOpenJDK/open${version}-binaries"
+
+        if (vendor != "adopt") {
+            repoName = "AdoptOpenJDK/open${version}-${vendor}-binaries"
+        }
+
+        return github.getRepository(repoName)
     }
 
-    private void uploadFiles(GHRelease release) {
+    private void uploadFiles(GHRelease release, List<File> files) {
         List<GHAsset> assets = release.getAssets()
         files.each { file ->
             // Delete existing asset
