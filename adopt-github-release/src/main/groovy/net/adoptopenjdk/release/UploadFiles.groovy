@@ -33,10 +33,10 @@ class UploadAdoptReleaseFiles {
                 default: "adopt"; break
             }
         }
-        grouped.each {(vendor, files) ->
-            GHRepository repo = getRepo(vendor)
+        grouped.each {entry ->
+            GHRepository repo = getRepo(entry.getKey())
             GHRelease release = getRelease(repo)
-            uploadFiles(release, files)
+            uploadFiles(release, entry.getValue())
         }
     }
 
