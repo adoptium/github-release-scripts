@@ -63,7 +63,9 @@ class UploadAdoptReleaseFiles {
                         (int) TimeUnit.SECONDS.toMillis(120)))
 
         println("Using Github org:'${org}'")
-        def repoName = "${org}/open${version}-binaries"
+        // jdk11 => 11
+        def numberVersion = version.replaceAll(/[^0-9]/, "")
+        def repoName = "${org}/temurin${numberVersion}-binaries"
 
         if (vendor != "adopt") {
             repoName = "${org}/open${version}-${vendor}-binaries"
