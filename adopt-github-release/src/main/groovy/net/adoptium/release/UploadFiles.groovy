@@ -1,4 +1,4 @@
-package net.adoptopenjdk.release
+package net.adoptium.release
 
 import groovy.cli.picocli.CliBuilder
 import groovy.cli.picocli.OptionAccessor
@@ -33,8 +33,7 @@ class UploadAdoptReleaseFiles {
     void release() {
         def grouped = files.groupBy {
             switch (it.getName()) {
-                case ~/.*dragonwell.*/: "dragonwell"; break;
-                default: "adopt"; break
+                case ~/.*hotspot.*/: "adopt"; break;
             }
         }
         grouped.each {entry ->
@@ -64,7 +63,9 @@ class UploadAdoptReleaseFiles {
                         (int) TimeUnit.SECONDS.toMillis(120)))
 
         println("Using Github org:'${org}'")
-        def repoName = "${org}/open${version}-binaries"
+        // jdk11 => 11
+        def numberVersion = version.replaceAll(/[^0-9]/, "")
+        def repoName = "${org}/temurin${numberVersion}-binaries"
 
         if (vendor != "adopt") {
             repoName = "${org}/open${version}-${vendor}-binaries"
@@ -135,7 +136,7 @@ private OptionAccessor parseArgs(String[] args) {
                 r longOpt: 'release', 'Is a release build'
                 h longOpt: 'help', 'Show usage information'
                 s longOpt: 'server', type: String, args: 1, optionalArg: true, defaultValue: 'https://api.github.com', 'Github server'
-                o longOpt: 'org', type: String, args: 1, optionalArg: true, defaultValue: 'AdoptOpenJDK', 'Github org'
+                o longOpt: 'org', type: String, args: 1, optionalArg: true, defaultValue: 'adoptium', 'Github org'
             }
 
     def options = cliBuilder.parse(args)

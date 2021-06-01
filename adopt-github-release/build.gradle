@@ -3,14 +3,14 @@ plugins {
     id 'application'
 }
 
-group 'net.adoptopenjdk.release'
+group 'net.adoptium.release'
 version '1.0.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 application {
-    mainClassName = 'net.adoptopenjdk.release.UploadFiles'
+    mainClassName = 'net.adoptium.release.UploadFiles'
 }
 
 dependencies {
