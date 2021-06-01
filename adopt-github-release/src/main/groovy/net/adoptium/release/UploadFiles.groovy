@@ -1,4 +1,4 @@
-package net.adoptopenjdk.release
+package net.adoptium.release
 
 import groovy.cli.picocli.CliBuilder
 import groovy.cli.picocli.OptionAccessor
