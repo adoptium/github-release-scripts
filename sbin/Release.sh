@@ -85,6 +85,7 @@ if [ "$RELEASE" == "true" ]; then
   description="Official Release of $TAG"
   RELEASE_OPTION="--release"
 else
+  TAG="${TAG}-beta"
   description="Nightly Build of $TAG"
 fi
 
