@@ -36,11 +36,9 @@ class UploadAdoptReleaseFiles {
                 case ~/.*hotspot.*/: "adopt"; break;
             }
         }
-        grouped.each {entry ->
-            GHRepository repo = getRepo(entry.getKey())
-            GHRelease release = getRelease(repo)
-            uploadFiles(release, entry.getValue())
-        }
+        GHRepository repo = getRepo("adopt")
+        GHRelease release = getRelease(repo)
+        uploadFiles(release, grouped.get("adopt"))
     }
 
     private GHRepository getRepo(String vendor) {
