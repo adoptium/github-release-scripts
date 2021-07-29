@@ -89,6 +89,8 @@ else
   description="Nightly Build of $TAG"
 fi
 
-cd adopt-github-release
-chmod +x gradlew
-GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--version \"${VERSION}\" --tag \"${TAG}\" --description \"${description}\" ${server} ${org} $RELEASE_OPTION $files"
+if [ "$DRY_RUN" == "false" ]; then
+    cd adopt-github-release
+    chmod +x gradlew
+    GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--version \"${VERSION}\" --tag \"${TAG}\" --description \"${description}\" ${server} ${org} $RELEASE_OPTION $files"
+fi
