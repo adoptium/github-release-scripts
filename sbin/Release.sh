@@ -13,30 +13,49 @@
 # limitations under the License.
 #
 
+#############################################################
+#
+# Release.sh TAG <TIMESTAMP> <GITHUB_SERVER> <GITHUB_ORG>
+#
+# This script will take the passed in TAG, rename the files 
+# in accordance with our consistent timestamp policy and 
+# then use a Groovy scripy with the Github API to create a
+# release (or update an existing release) up in GitHub 
+#
+# TODO We could probably use some functions in here
+#
+#############################################################
+
+# Our timestamps must fit this particular format: YYYY-DD-MM-hh-mm, e.g. 2021-07-30-16-11
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
 
-# IF YOU ARE MODIFYING THIS THEN THE FILE MATCHING IS PROBABLY WRONG, MAKE SURE openjdk-api, v2.js IS UPDATED TOO
+# IF YOU ARE MODIFYING THIS THEN THE FILE MATCHING IS PROBABLY WRONG, MAKE SURE adoptium/api.adoptium.net and adoptopenjdk/openjdk-api, ARE UPDATED TOO
 #      OpenJDK 8U_             -jdk        x64_           Linux_         hotspot_         2018-06-15-10-10                .tar.gz
 #      OpenJDK 11_             -jdk        x64_           Linux_         hotspot_         11_28                           .tar.gz
 regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:alnum:]]+).*\.(tar\.gz|zip|pkg|msi)";
 regexArchivesOnly="${regex}$";
 
+# Check that a TAG, e.g. jdk11.0.12+7, has been passed in.
+# Note we deliberately do not cehck the format of the tag for flexibility sake
 if [ -z "${TAG}" ]; then
     echo "Must have a tag set"
     exit 1
 fi
 
-if [ "$RELEASE" != "true" ] && [ -z "${TIMESTAMP}" ]; then
+# Nightlies must have a TIMESTAMP.
+if [ "$RELEASE" == "false" ] && [ -z "${TIMESTAMP}" ]; then
     echo "Nightly must have a TIMESTAMP set"
     exit 1
 fi
 
+# Set the GITHUB SERVER if we have one
 if [ -z "${GITHUB_SERVER}" ]; then
    server=""
 else
    server="--server \"${GITHUB_SERVER}\""
 fi
 
+# Set the GITHUB_ORG if we have one
 if [ -z "${GITHUB_ORG}" ]; then
    org=""
 else
@@ -76,21 +95,26 @@ do
   fi
 done
 
-files=`ls $PWD/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+# TODO - shellcheck (SC2012) tells us that using find is better than ls here.
+files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
 
-echo "Release: $RELEASE"
+echo ""
+echo "RELEASE flag is set to: $RELEASE"
+echo ""
 
 RELEASE_OPTION=""
 if [ "$RELEASE" == "true" ]; then
   description="Official Release of $TAG"
   RELEASE_OPTION="--release"
 else
+  # -beta is a special designation that we must use to indicate non GA (non TCK'd) builds.
   TAG="${TAG}-beta"
   description="Nightly Build of $TAG"
 fi
 
+# Hand over to the Groovy script that uses the GitHub API to actually create the release and upload files
 if [ "$DRY_RUN" == "false" ]; then
-    cd adopt-github-release
+    cd adopt-github-release || exit 1
     chmod +x gradlew
     GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--version \"${VERSION}\" --tag \"${TAG}\" --description \"${description}\" ${server} ${org} $RELEASE_OPTION $files"
 fi
