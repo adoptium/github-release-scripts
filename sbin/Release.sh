@@ -37,7 +37,7 @@ regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk)_([[:alnum:]\-]+)_([[:alnum:]]+)_([[:al
 regexArchivesOnly="${regex}$";
 
 # Check that a TAG, e.g. jdk11.0.12+7, has been passed in.
-# Note we deliberately do not cehck the format of the tag for flexibility sake
+# Note we deliberately do not check the format of the tag
 if [ -z "${TAG}" ]; then
     echo "Must have a tag set"
     exit 1
@@ -49,14 +49,14 @@ if [ "$RELEASE" == "false" ] && [ -z "${TIMESTAMP}" ]; then
     exit 1
 fi
 
-# Set the GITHUB SERVER if we have one
+# Set the GitHub server to push to
 if [ -z "${GITHUB_SERVER}" ]; then
    server=""
 else
    server="--server \"${GITHUB_SERVER}\""
 fi
 
-# Set the GITHUB_ORG if we have one
+# Set the GitHub org to push to
 if [ -z "${GITHUB_ORG}" ]; then
    org=""
 else
@@ -96,6 +96,7 @@ do
   fi
 done
 
+# Grab the list of files to upload
 # TODO - shellcheck (SC2012) tells us that using find is better than ls here.
 files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
 
