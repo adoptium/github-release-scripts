@@ -13,18 +13,19 @@
 # limitations under the License.
 #
 
-#############################################################
+###################################################################
 #
-# Release.sh TAG <TIMESTAMP> <GITHUB_SERVER> <GITHUB_ORG>
+# Release.sh TAG <RELEASE> <TIMESTAMP> <GITHUB_SERVER> <GITHUB_ORG>
 #
 # This script will take the passed in TAG, rename the files 
 # in accordance with our consistent timestamp policy and 
 # then use a Groovy scripy with the Github API to create a
 # release (or update an existing release) up in GitHub 
 #
-# TODO We could probably use some functions in here
+# TODO We could probably use some functions in here and better 
+# documentation of the variables using the POSIX standard
 #
-#############################################################
+###################################################################
 
 # Our timestamps must fit this particular format: YYYY-DD-MM-hh-mm, e.g. 2021-07-30-16-11
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
