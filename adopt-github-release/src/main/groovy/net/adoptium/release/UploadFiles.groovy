@@ -33,7 +33,9 @@ class UploadAdoptReleaseFiles {
     void release() {
         def grouped = files.groupBy {
             switch (it.getName()) {
+                // Only release file names containing "hotspot" or "sources"
                 case ~/.*hotspot.*/: "adopt"; break;
+                case ~/.*sources.*/: "adopt"; break;
             }
         }
         GHRepository repo = getRepo("adopt")
