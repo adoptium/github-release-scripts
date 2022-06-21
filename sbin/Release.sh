@@ -78,6 +78,7 @@ do
       mv "${file}" "${newName}"
       mv "${file}.sha256.txt" "${newName}.sha256.txt"
       mv "${file}.json" "${newName}.json"
+      mv "${file}.sig" "${newName}.sig"
     fi
 
     # Fix checksum file name
@@ -98,7 +99,8 @@ done
 
 # Grab the list of files to upload
 # TODO - shellcheck (SC2012) tells us that using find is better than ls here.
-files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
+# NOTE: If adding something here you may need to change the EXPECTED values in releaseCheck.sh
+files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json,*.sig} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
 
 echo ""
 echo "RELEASE flag is set to: $RELEASE"
