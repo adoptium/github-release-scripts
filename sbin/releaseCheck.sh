@@ -14,8 +14,8 @@ curl -q https://github.com/adoptium/temurin${TEMURIN_VERSION}-binaries/releases/
 
 #### LINUX (ALL)
 for ARCH in x64 aarch64 ppc64le s390x arm; do
-  # jre, jdk, debugimage, static-libs (Except JDK8) in base, json, sha256
-  EXPECTED=12; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=9
+  # jre, jdk, debugimage, static-libs (Except JDK8) in base, json, sha256, GPG sig
+  EXPECTED=16; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=12
   if ! [ "${TEMURIN_VERSION}" -eq 8 -a "$ARCH" = "s390x" ]; then
     if [ $(cat releaseCheck.$$.tmp | grep ${ARCH}_linux | grep href | cut -d'"' -f2 | wc -l) -eq $EXPECTED ]
     then
@@ -65,7 +65,7 @@ fi
 #### WINDOWS
 for ARCH in x64 x86-32; do
   # jre, jdk, jre-msi, jdk-msi, debugimage, static-libs (Except JDK8) in base, json, sha256
-  EXPECTED=18; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=15
+  EXPECTED=24; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=20
   if [ $(cat releaseCheck.$$.tmp | grep ${ARCH}_windows | grep href | cut -d'"' -f2 | wc -l) -eq $EXPECTED ]
   then
      echo "Windows on $ARCH: OK!"
@@ -78,7 +78,7 @@ done
 ### MAC
 for ARCH in x64 aarch64; do
   # jre, jdk, jre-pkg, jdk-pkg, debugimage, static-libs (Except JDK8) in base, json, sha256
-  EXPECTED=18; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=15
+  EXPECTED=24; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=20
   if ! [ "${TEMURIN_VERSION}" -eq 8 -a "$ARCH" = "aarch64" ]; then
     if [ $(cat releaseCheck.$$.tmp | grep ${ARCH}_mac | grep href | cut -d'"' -f2 | wc -l) -eq $EXPECTED ]
     then
