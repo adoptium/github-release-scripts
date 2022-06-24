@@ -14,7 +14,7 @@ curl -q https://github.com/adoptium/temurin${TEMURIN_VERSION}-binaries/releases/
 
 #### LINUX (ALL)
 for ARCH in x64 aarch64 ppc64le s390x arm; do
-  # jre, jdk, debugimage, static-libs (Except JDK8) in base, json, sha256
+  # jre, jdk, debugimage, static-libs (Except JDK8) in base, json, sha256, GPG sig
   EXPECTED=16; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=12
   if ! [ "${TEMURIN_VERSION}" -eq 8 -a "$ARCH" = "s390x" ]; then
     if [ $(cat releaseCheck.$$.tmp | grep ${ARCH}_linux | grep href | cut -d'"' -f2 | wc -l) -eq $EXPECTED ]
