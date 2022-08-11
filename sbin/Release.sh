@@ -83,6 +83,10 @@ do
     # Fix checksum file name
     strippedFileName=$(echo "${newName}" | sed -r "s/.+\\///g")
     sed -i -r "s/^([0-9a-fA-F ]+).*/\1${strippedFileName}/g" "${newName}.sha256.txt"
+    if grep -q 'target' "${newName}.sha256.txt"; then
+        echo "${newName}.sha256.txt still has full path, should be stripped!"
+        exit 1
+    fi
 
     FILE_VERSION=${BASH_REMATCH[1]};
     FILE_TYPE=${BASH_REMATCH[2]};
