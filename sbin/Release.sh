@@ -79,7 +79,7 @@ do
     newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
     if [ "${file}" != "${newName}" ]; then
-      # Rename archive and checksum file with new timestamp
+      # Rename archive and its associated files with new timestamp
       echo "Renaming ${file} to ${newName}"
       mv "${file}" "${newName}"
       mv "${file}.sha256.txt" "${newName}.sha256.txt"
@@ -120,7 +120,7 @@ do
       newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
       if [ "${file}" != "${newName}" ]; then
-        # Rename archive and checksum file with new timestamp
+        # Rename non-archive file with new timestamp
         echo "Renaming ${file} to ${newName}"
         mv "${file}" "${newName}"
       fi
