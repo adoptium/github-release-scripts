@@ -68,7 +68,7 @@ else
    org="--org \"${GITHUB_ORG}\""
 fi
 
-# Rename archive files to ensure a consistent timestamp across release
+# Rename archive files (and their associated files: checksum, metadata, sig) to ensure a consistent timestamp across release
 for file in OpenJDK*
 do
   # If file name is an archive rename timestamp along with it's associated files 
