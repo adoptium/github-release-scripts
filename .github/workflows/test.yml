@@ -18,7 +18,7 @@ jobs:
     - uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc # v3.6.0
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '11'
         cache: 'gradle'
 
     - name: Run Groovy Tests
