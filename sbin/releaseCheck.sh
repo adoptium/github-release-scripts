@@ -98,7 +98,7 @@ for ARCH in x64 x86-32; do
     if [ $ACTUAL -eq 0 ]; then
       echo "Windows on $ARCH: Not published"
     else
-      echo "Windows on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED  (Expect jre, jdk, msi-jre msi-jdk, debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+      echo "Windows on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED (Expect jre, jdk, msi-jre msi-jdk, debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
     fi
     [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_windows
   fi
@@ -132,4 +132,4 @@ else
    [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep sources
 fi
 
-# rm releaseCheck.$$.tmp
+rm releaseCheck.$$.tmp
