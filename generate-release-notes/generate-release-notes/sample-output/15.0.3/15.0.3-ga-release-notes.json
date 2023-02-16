@@ -1,0 +1,242 @@
+[
+  {
+    "id": "JDK-8239105",
+    "title": "Add exception for expiring Digicert root certificates to VerifyCACerts test",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8239105",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8254081",
+    "title": "java/security/cert/PolicyNode/GetPolicyQualifiers.java fails due to an expired certificate",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8254081",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8262541",
+    "title": "Bump update version for OpenJDK: jdk-15.0.3",
+    "priority": "4",
+    "component": "infrastructure",
+    "subcomponent": "infrastructure",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8262541",
+    "type": "Enhancement",
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8262855",
+    "title": "Remove root certificates with 1024-bit keys",
+    "priority": "3",
+    "component": "security-libs",
+    "subcomponent": "security-libs/java.security",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8262855",
+    "type": "Backport",
+    "backportOf": "JDK-8243559"
+  },
+  {
+    "id": "JDK-8262974",
+    "title": "PPC64 Zero build fails with 'VMError::controlled_crash(int)::FunctionDescriptor functionDescriptor' has incomplete type and cannot be defined",
+    "priority": "2",
+    "component": "hotspot",
+    "subcomponent": "hotspot/runtime",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8262974",
+    "type": "Backport",
+    "backportOf": "JDK-8261310"
+  },
+  {
+    "id": "JDK-8247676",
+    "title": "vcruntime140_1.dll is not needed on 32-bit Windows",
+    "priority": "3",
+    "component": "infrastructure",
+    "subcomponent": "infrastructure/build",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8247676",
+    "type": "Bug",
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8263013",
+    "title": "(tz) Upgrade Timezone Data to tzdata2020f",
+    "priority": "4",
+    "component": "core-libs",
+    "subcomponent": "core-libs/java.time",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8263013",
+    "type": "Backport",
+    "backportOf": "JDK-8259048"
+  },
+  {
+    "id": "JDK-8263014",
+    "title": "(tz) Upgrade Timezone Data to tzdata2021a",
+    "priority": "3",
+    "component": "core-libs",
+    "subcomponent": "core-libs/java.time",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8263014",
+    "type": "Backport",
+    "backportOf": "JDK-8260356"
+  },
+  {
+    "id": "JDK-8263015",
+    "title": "Upgrade to freetype 2.10.2",
+    "priority": "3",
+    "component": "client-libs",
+    "subcomponent": "client-libs/2d",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8263015",
+    "type": "Backport",
+    "backportOf": "JDK-8247867"
+  },
+  {
+    "id": "JDK-8263016",
+    "title": "Upgrade to LittleCMS 2.11",
+    "priority": "3",
+    "component": "client-libs",
+    "subcomponent": "client-libs/2d",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8263016",
+    "type": "Backport",
+    "backportOf": "JDK-8245400"
+  },
+  {
+    "id": "JDK-8263076",
+    "title": "Code IfNode::fold_compares_helper more defensively",
+    "priority": "2",
+    "component": "hotspot",
+    "subcomponent": "hotspot/compiler",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8263076",
+    "type": "Backport",
+    "backportOf": "JDK-8261912"
+  },
+  {
+    "id": "JDK-8263088",
+    "title": "Incorrect numeric currency code for ROL",
+    "priority": "4",
+    "component": "core-libs",
+    "subcomponent": "core-libs/java.util:i18n",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8263088",
+    "type": "Backport",
+    "backportOf": "JDK-8252497"
+  },
+  {
+    "id": "JDK-8263542",
+    "title": "Disable TLS 1.0 and 1.1",
+    "priority": "2",
+    "component": "security-libs",
+    "subcomponent": "security-libs/javax.net.ssl",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8263542",
+    "type": "Backport",
+    "backportOf": "JDK-8202343"
+  },
+  {
+    "id": "JDK-8263543",
+    "title": "JDK-8202343 is incomplete",
+    "priority": "2",
+    "component": "security-libs",
+    "subcomponent": "security-libs/javax.net.ssl",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8263543",
+    "type": "Backport",
+    "backportOf": "JDK-8256682"
+  },
+  {
+    "id": "JDK-8244473",
+    "title": "Contextualize registration for JNDI",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8244473",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8244543",
+    "title": "Enhanced handling of abstract classes",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8244543",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8265540",
+    "title": "compiler/graalunit/CoreTest.java fails with NPE after JDK-8244543",
+    "priority": "3",
+    "component": "hotspot",
+    "subcomponent": "hotspot/compiler",
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8265540",
+    "type": "Backport",
+    "backportOf": "JDK-8259633"
+  },
+  {
+    "id": "JDK-8250568",
+    "title": "Less ambiguous processing",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8250568",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8253799",
+    "title": "Make lists of normal filenames",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8253799",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8261183",
+    "title": "Follow on to Make lists of normal filenames",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8261183",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8249906",
+    "title": "Enhance opening JARs",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8249906",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8258247",
+    "title": "Couple of issues in fix for JDK-8249906",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8258247",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8259428",
+    "title": "AlgorithmId.getEncodedParams() should return copy",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8259428",
+    "type": null,
+    "backportOf": null
+  },
+  {
+    "id": "JDK-8257001",
+    "title": "Improve HTTP client support",
+    "priority": null,
+    "component": null,
+    "subcomponent": null,
+    "link": "https://bugs.openjdk.java.net/browse/JDK-8257001",
+    "type": null,
+    "backportOf": null
+  }
+]
