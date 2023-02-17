@@ -1,0 +1,122 @@
+[
+  {
+    "id": "JDK-8239105",
+    "commit": "cf6489ab609d8f10333b45421c5cf80dae9da1e7",
+    "title": "8239105: Add exception for expiring Digicert root certificates to VerifyCACerts test"
+  },
+  {
+    "id": "JDK-8254081",
+    "commit": "0934873e869c6f4b8acbd9508ab49141a66a9692",
+    "title": "8254081: java/security/cert/PolicyNode/GetPolicyQualifiers.java fails due to an expired certificate"
+  },
+  {
+    "id": "JDK-8262541",
+    "commit": "5245d67a93182b0fdd934854b014236f5ce9558e",
+    "title": "8262541: Bump update version for OpenJDK: jdk-15.0.3"
+  },
+  {
+    "id": "JDK-8243559",
+    "commit": "9e8d8c64821a5623b58a3777334e2b770c4c3dbb",
+    "title": "8243559: Remove root certificates with 1024-bit keys"
+  },
+  {
+    "id": "JDK-8261310",
+    "commit": "574fa0ccada6dce253913718f4d52399b5b19b21",
+    "title": "8261310: PPC64 Zero build fails with 'VMError::controlled_crash(int)::FunctionDescriptor functionDescriptor' has incomplete type and cannot be defined"
+  },
+  {
+    "id": "JDK-8247676",
+    "commit": "bcc668b77f0a0c22db49ef048286a9df5c04a308",
+    "title": "8247676: vcruntime140_1.dll is not needed on 32-bit Windows"
+  },
+  {
+    "id": "JDK-8259048",
+    "commit": "6c1d133820fc74e98c49e54e8c0a63dc53654267",
+    "title": "8259048: (tz) Upgrade time-zone data to tzdata2020f"
+  },
+  {
+    "id": "JDK-8260356",
+    "commit": "3f48d14ea0261d1cb41d38a85df77df38f116f10",
+    "title": "8260356: (tz) Upgrade time-zone data to tzdata2021a"
+  },
+  {
+    "id": "JDK-8247867",
+    "commit": "1207f3df14cd77c46e445bfc1c51dfe0eb463dae",
+    "title": "8247867: Upgrade to freetype 2.10.2"
+  },
+  {
+    "id": "JDK-8245400",
+    "commit": "05d391cd19280c8272eaa2168e6ceb59b276ab4e",
+    "title": "8245400: Upgrade to LittleCMS 2.11"
+  },
+  {
+    "id": "JDK-8261912",
+    "commit": "8fc99021a2351516094d048035be02fa3907497e",
+    "title": "8261912: Code IfNode::fold_compares_helper more defensively"
+  },
+  {
+    "id": "JDK-8252497",
+    "commit": "257cba3d89cb5b828d378eef5042ed582a5a3979",
+    "title": "8252497: Incorrect numeric currency code for ROL"
+  },
+  {
+    "id": "JDK-8202343",
+    "commit": "7c270afaba8438fff6edcc933e8e055aafd24bf0",
+    "title": "8202343: Disable TLS 1.0 and 1.1"
+  },
+  {
+    "id": "JDK-8256682",
+    "commit": "a423e9e356ed16b4e71650071a8e0bc3d6bf32ea",
+    "title": "8256682: JDK-8202343 is incomplete"
+  },
+  {
+    "id": "JDK-8244473",
+    "commit": "414e571766f4087dfe2df2388d5f5ba0e85b58e0",
+    "title": "8244473: Contextualize registration for JNDI"
+  },
+  {
+    "id": "JDK-8244543",
+    "commit": "df3752181592f07508b2842955fef5e5c78463a1",
+    "title": "8244543: Enhanced handling of abstract classes"
+  },
+  {
+    "id": "JDK-8259633",
+    "commit": "ca72d7467ff1be82a395a221d95f9c52a0d8c6ad",
+    "title": "8259633: compiler/graalunit/CoreTest.java fails with NPE after JDK-8244543"
+  },
+  {
+    "id": "JDK-8250568",
+    "commit": "e0cc6b018bab37a5d825b891d13195c411fe6a18",
+    "title": "8250568: Less ambiguous processing"
+  },
+  {
+    "id": "JDK-8253799",
+    "commit": "d0951b13f84aed2c69a88b52f4128dd7556ef725",
+    "title": "8253799: Make lists of normal filenames"
+  },
+  {
+    "id": "JDK-8261183",
+    "commit": "e6c6caa84a1cccab928b0580e7d3f3472a63c01d",
+    "title": "8261183: Follow on to Make lists of normal filenames"
+  },
+  {
+    "id": "JDK-8249906",
+    "commit": "3e53c2905ad7b3d12c6a11ae2707e85808f6781f",
+    "title": "8249906: Enhance opening JARs"
+  },
+  {
+    "id": "JDK-8258247",
+    "commit": "3e53c2905ad7b3d12c6a11ae2707e85808f6781f",
+    "title": "8258247: Couple of issues in fix for JDK-8249906"
+  },
+  {
+    "id": "JDK-8259428",
+    "commit": "3e53c2905ad7b3d12c6a11ae2707e85808f6781f",
+    "title": "8259428: AlgorithmId.getEncodedParams() should return copy"
+  },
+  {
+    "id": "JDK-8257001",
+    "commit": "5c924b4d7b14d0984b875c191a7367d9dbd7853f",
+    "title": "8257001: Improve HTTP client support"
+  }
+]

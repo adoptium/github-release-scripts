@@ -1,0 +1,52 @@
+[{
+    "sha": "2434530e5ee4263cf92b5b55812140fc0b7f751e",
+    "node_id": "C_kwDOF886Z9oAKDI0MzQ1MzBlNWVlNDI2M2NmOTJiNWI1NTgxMjE0MGZjMGI3Zjc1MWU",
+    "commit": {
+      "author": {
+        "name": "Goetz Lindenmaier",
+        "email": "goetz@openjdk.org",
+        "date": "2022-09-16T06:48:51Z"
+      },
+      "committer": {
+        "name": "Goetz Lindenmaier",
+        "email": "goetz@openjdk.org",
+        "date": "2022-09-16T06:48:51Z"
+      },
+      "message": "8277576: ProblemList runtime/ErrorHandling/CreateCoredumpOnCrash.java on macosx-X64\n8277577: ProblemList compiler/onSpinWait/TestOnSpinWaitAArch64DefaultFlags.java on linux-aarch64\n8277578: ProblemList applications/jcstress/acqrel.java on linux-aarch64\n\nBackport-of: 1049aba1fb65fd70bd723c80a84250512a68d653",
+      "tree": {
+        "sha": "fd69e95df3ed4f442acbd49a98542b320b50574b",
+        "url": "https://api.github.com/repos/adoptium/jdk17u/git/trees/fd69e95df3ed4f442acbd49a98542b320b50574b"
+      },
+      "url": "https://api.github.com/repos/adoptium/jdk17u/git/commits/2434530e5ee4263cf92b5b55812140fc0b7f751e",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null
+      }
+    },
+    "url": "https://api.github.com/repos/adoptium/jdk17u/commits/2434530e5ee4263cf92b5b55812140fc0b7f751e",
+    "html_url": "https://github.com/adoptium/jdk17u/commit/2434530e5ee4263cf92b5b55812140fc0b7f751e",
+    "comments_url": "https://api.github.com/repos/adoptium/jdk17u/commits/2434530e5ee4263cf92b5b55812140fc0b7f751e/comments",
+    "author": {
+      "login": "GoeLin",
+      "id": 24567974,
+      "node_id": "MDQ6VXNlcjI0NTY3OTc0",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24567974?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/GoeLin",
+      "html_url": "https://github.com/GoeLin",
+      "followers_url": "https://api.github.com/users/GoeLin/followers",
+      "following_url": "https://api.github.com/users/GoeLin/following{/other_user}",
+      "gists_url": "https://api.github.com/users/GoeLin/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/GoeLin/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/GoeLin/subscriptions",
+      "organizations_url": "https://api.github.com/users/GoeLin/orgs",
+      "repos_url": "https://api.github.com/users/GoeLin/repos",
+      "events_url": "https://api.github.com/users/GoeLin/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/GoeLin/received_events",
+      "type": "User",
+      "site_admin": false
+    }
+]

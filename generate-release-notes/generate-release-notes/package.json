@@ -1,0 +1,27 @@
+{
+  "name": "release-notes-prototype",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fetchReleaseNotes.js",
+  "scripts": {
+    "test": "node --test",
+    "lint": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BethGriggs/release-notes-prototype.git"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "Beth Griggs",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/BethGriggs/release-notes-prototype/issues"
+  },
+  "homepage": "https://github.com/BethGriggs/release-notes-prototype#readme",
+  "devDependencies": {
+    "eslint": "^8.28.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}
