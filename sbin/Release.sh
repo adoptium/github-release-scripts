@@ -31,15 +31,16 @@
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
 
 # IF YOU ARE MODIFYING THIS THEN THE FILE MATCHING IS PROBABLY WRONG, MAKE SURE adoptium/api.adoptium.net and adoptopenjdk/openjdk-api, ARE UPDATED TOO
-#      OpenJDK 8U_             -jdk        x64_           Linux_         hotspot_         2018-06-15-10-10                .tar.gz
-#      OpenJDK 11_             -jdk        x64_           Linux_         hotspot_         11_28                           .tar.gz
-#      OpenJDK 18_             -testimage  x64_           Linux_         hotspot_         18.0.1_10                       .tar.gz
-#      OpenJDK 8U_             -testimage  x64_           Linux_         hotspot_         8u332b09                        .tar.gz
+#      OpenJDK 8U_             -jdk        x64_           linux_         hotspot_         2018-06-15-10-10                .tar.gz
+#      OpenJDK 11_             -jdk        x64_           linux_         hotspot_         11_28                           .tar.gz
+#      OpenJDK 18_             -testimage  x64_           linux_         hotspot_         18.0.1_10                       .tar.gz
+#      OpenJDK 8U_             -testimage  x64_           linux_         hotspot_         8u332b09                        .tar.gz
 #      OpenJDK 18U             -jdk-sources                                               2020-06-06-16-36                .tar.gz
-#      OpenJDK 11_             -jdk        x64_           Linux_         _fast_startup_   11_28                           .tar.gz
+#      OpenJDK 11_             -jdk        x64_           linux_         _fast_startup_   11_28                           .tar.gz
+#      OpenJDK                 -debugimage aarch64_       linux_         hotspot_         2023-02-16-12-32                .tar.gz
 #
 #             (version     )  (type                                                                                           ) (arch           ) (os             ) (variant         ) (timestamp     or version      )  (extension          )
-regex="OpenJDK([[:digit:]]+)U?(-jre|-jdk|-debugimage|-static-libs-glibc|-static-libs|-static-libs-musl|-testimage|-jdk-sources)_([[:alnum:]\-]+_)?([[:alnum:]\-]+_)?([[:alnum:]\-_]+_)?([[:digit:]\-]+|[[:alnum:]\._]+)\.(tar\.gz|zip|pkg|msi)";
+regex="OpenJDK([[:digit:]]*)U?(-jre|-jdk|-debugimage|-static-libs-glibc|-static-libs|-static-libs-musl|-testimage|-jdk-sources)_([[:alnum:]\-]+_)?([[:alnum:]\-]+_)?([[:alnum:]\-_]+_)?([[:digit:]\-]+|[[:alnum:]\._]+)\.(tar\.gz|zip|pkg|msi)";
 
 regexArchivesOnly="${regex}$";
 
