@@ -36,6 +36,7 @@ class UploadAdoptReleaseFiles {
                 // Only release file names containing "hotspot" or "sources"
                 case ~/.*hotspot.*/: "adopt"; break;
                 case ~/.*sources.*/: "adopt"; break;
+                case ~/.*AQAvitTapFiles.*/: "adopt"; break;
             }
         }
         GHRepository repo = getRepo("adopt")

@@ -71,70 +71,73 @@ else
    org="--org \"${GITHUB_ORG}\""
 fi
 
-# Rename archive files (and their associated files: checksum, metadata, sig) to ensure a consistent timestamp across release
-for file in OpenJDK*
-do
-  # If file name is an archive rename timestamp along with it's associated files 
-  if [[ $file =~ $regexArchivesOnly ]];
-  then
-    echo "Processing archive file: $file";
+if [ "$UPLOAD_TAPS_ONLY" == "false" ]; then
+  # Rename archive files (and their associated files: checksum, metadata, sig) to ensure a consistent timestamp across release
+  for file in OpenJDK*
+  do
+    # If file name is an archive rename timestamp along with it's associated files 
+    if [[ $file =~ $regexArchivesOnly ]];
+    then
+      echo "Processing archive file: $file";
 
-    newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
-
-    if [ "${file}" != "${newName}" ]; then
-      # Rename archive and its associated files with new timestamp
-      echo "Renaming ${file} to ${newName}"
-      mv "${file}" "${newName}"
-      mv "${file}.sha256.txt" "${newName}.sha256.txt"
-      mv "${file}.json" "${newName}.json"
-      mv "${file}.sig" "${newName}.sig"
-    fi
-
-    # Fix checksum file name
-    strippedFileName=$(echo "${newName}" | sed -r "s/.+\\///g")
-    sed -i -r "s/^([0-9a-fA-F ]+).*/\1${strippedFileName}/g" "${newName}.sha256.txt"
-
-    FILE_VERSION=${BASH_REMATCH[1]};
-    FILE_TYPE=${BASH_REMATCH[2]};
-    FILE_ARCH=${BASH_REMATCH[3]};
-    FILE_OS=${BASH_REMATCH[4]};
-    FILE_VARIANT=${BASH_REMATCH[5]};
-    FILE_TS_OR_VERSION=${BASH_REMATCH[6]};
-    FILE_EXTENSION=${BASH_REMATCH[7]};
-
-    echo "version:${FILE_VERSION} type: ${FILE_TYPE} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestamp or version:${FILE_TS_OR_VERSION} timestamp:${TIMESTAMP} extension:${FILE_EXTENSION}";
-  fi
-done
-
-# Rename any remaining non-archive file timestamps that have not already been renamed
-for file in OpenJDK*
-do
-  if [[ ! $file =~ $regexArchivesOnly ]];
-  then
-    echo "Processing non-archive file: $file";
-
-    # Check no new file type archive has been added without updating regexArchivesOnly
-    if [[ $file == *.tar.gz ]] || [[ $file == *.zip ]] || [[ $file == *.pkg ]] || [[ $file == *.msi ]]; then
-      echo "ERROR: ${file} is an archive but does not match regex ${regexArchivesOnly}, please update sbin/Release.sh"
-      exit 1
-    fi
-
-    if [[ $file =~ $timestampRegex ]]; then
       newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
 
       if [ "${file}" != "${newName}" ]; then
-        # Rename non-archive file with new timestamp
+        # Rename archive and its associated files with new timestamp
         echo "Renaming ${file} to ${newName}"
         mv "${file}" "${newName}"
+        mv "${file}.sha256.txt" "${newName}.sha256.txt"
+        mv "${file}.json" "${newName}.json"
+        mv "${file}.sig" "${newName}.sig"
+      fi
+
+      # Fix checksum file name
+      strippedFileName=$(echo "${newName}" | sed -r "s/.+\\///g")
+      sed -i -r "s/^([0-9a-fA-F ]+).*/\1${strippedFileName}/g" "${newName}.sha256.txt"
+
+      FILE_VERSION=${BASH_REMATCH[1]};
+      FILE_TYPE=${BASH_REMATCH[2]};
+      FILE_ARCH=${BASH_REMATCH[3]};
+      FILE_OS=${BASH_REMATCH[4]};
+      FILE_VARIANT=${BASH_REMATCH[5]};
+      FILE_TS_OR_VERSION=${BASH_REMATCH[6]};
+      FILE_EXTENSION=${BASH_REMATCH[7]};
+
+      echo "version:${FILE_VERSION} type: ${FILE_TYPE} arch:${FILE_ARCH} os:${FILE_OS} variant:${FILE_VARIANT} timestamp or version:${FILE_TS_OR_VERSION} timestamp:${TIMESTAMP} extension:${FILE_EXTENSION}";
+    fi
+  done
+
+  # Rename any remaining non-archive file timestamps that have not already been renamed
+  for file in OpenJDK*
+  do
+    if [[ ! $file =~ $regexArchivesOnly ]];
+    then
+      echo "Processing non-archive file: $file";
+
+      # Check no new file type archive has been added without updating regexArchivesOnly
+      if [[ $file == *.tar.gz ]] || [[ $file == *.zip ]] || [[ $file == *.pkg ]] || [[ $file == *.msi ]]; then
+        echo "ERROR: ${file} is an archive but does not match regex ${regexArchivesOnly}, please update sbin/Release.sh"
+        exit 1
+      fi
+
+      if [[ $file =~ $timestampRegex ]]; then
+        newName=$(echo "${file}" | sed -r "s/${timestampRegex}/$TIMESTAMP/")
+
+        if [ "${file}" != "${newName}" ]; then
+          # Rename non-archive file with new timestamp
+          echo "Renaming ${file} to ${newName}"
+          mv "${file}" "${newName}"
+        fi
       fi
     fi
-  fi
-done
-
-# Grab the list of files to upload
-# TODO - shellcheck (SC2012) tells us that using find is better than ls here.
-# NOTE: If adding something here you may need to change the EXPECTED values in releaseCheck.sh
-files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json,*.sig} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
+  done
+  # Grab the list of files to upload
+  # TODO - shellcheck (SC2012) tells us that using find is better than ls here.
+  # NOTE: If adding something here you may need to change the EXPECTED values in releaseCheck.sh
+  files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json,*.sig} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
+else 
+  files=$(ls "$PWD"/AQAvitTapFiles.tar.gz)
+fi
 
 echo ""
 echo "RELEASE flag is set to: $RELEASE"
