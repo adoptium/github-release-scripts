@@ -71,7 +71,7 @@ else
    org="--org \"${GITHUB_ORG}\""
 fi
 
-if [ "$UPLOAD_TAPS_ONLY" == "false" ]; then
+if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
   # Rename archive files (and their associated files: checksum, metadata, sig) to ensure a consistent timestamp across release
   for file in OpenJDK*
   do
@@ -136,6 +136,7 @@ if [ "$UPLOAD_TAPS_ONLY" == "false" ]; then
   # NOTE: If adding something here you may need to change the EXPECTED values in releaseCheck.sh
   files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json,*.sig} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
 else 
+  #TODO: enhance to a general file name - update groovy release() - case ~/.*AQAvitTapFiles.*/: "adopt"; break;
   files=$(ls "$PWD"/AQAvitTapFiles.tar.gz)
 fi
 
@@ -147,6 +148,9 @@ RELEASE_OPTION=""
 if [ "$RELEASE" == "true" ]; then
   description="Official Release of $TAG"
   RELEASE_OPTION="--release"
+else if [ "$UPLOAD_TESTRESULTS_ONLY" == "true" ]; then
+  echo "Test results are only needed to upload for releases!"
+  exit 1
 else
   # -beta is a special designation that we must use to indicate non GA (non TCK'd) builds.
   TAG="${TAG}-beta"
@@ -158,4 +162,9 @@ if [ "$DRY_RUN" == "false" ]; then
     cd adopt-github-release || exit 1
     chmod +x gradlew
     GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--version \"${VERSION}\" --tag \"${TAG}\" --description \"${description}\" ${server} ${org} $RELEASE_OPTION $files"
+    # Run releaseCheck.sh to check that the correct number of artifacts are live
+    if [ -z "$TIMESTAMP" -a "$UPLOAD_TESTRESULTS_ONLY" = "false" ]; then
+      echo "*** PERFORMING RELEASE CHECK TO SEE IF THERE ARE ANY UNEXPECTED PROBLEMS ***"
+      ./sbin/releaseCheck.sh ${VERSION#JDK} $TAG VERBOSE
+    fi
 fi
