@@ -10,8 +10,8 @@ pipeline {
         string(name: 'UPSTREAM_JOB_NUMBER', defaultValue: '', description: 'The build number of the pipeline / job you want to release, e.g. 92')
         string(name: 'UPSTREAM_JOB_LINK', defaultValue: '', description: 'The build link of the pipeline / job you want to release, e.g. 92')
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Tick this box to actually release the binary to GitHub')
-        string(name: 'ARTIFACTS_TO_COPY', defaultValue: '**/*.tar.gz,**/*.zip,**/*.sha256.txt,**/*.msi,**/*.pkg,**/*.json,**/*.sig', description: 'For example to only ship linux x64:<br/>
-target/linux/x64/**/*.tar.gz,target/linux/x64/**/*.sha256.txt,target/linux/x64/**/*.json,target/linux/x64/**/*.sig<br/>
+        string(name: 'ARTIFACTS_TO_COPY', defaultValue: '**/*.tar.gz,**/*.zip,**/*.sha256.txt,**/*.msi,**/*.pkg,**/*.json,**/*.sig', description: 'For example to only ship linux x64:<br/> \n
+target/linux/x64/**/*.tar.gz,target/linux/x64/**/*.sha256.txt,target/linux/x64/**/*.json,target/linux/x64/**/*.sig<br/> \n
 Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_linux*.sig')
         string(name: 'ARTIFACTS_TO_SKIP', defaultValue: '', description: 'For example in most release builds we skip the testimage: *testimage*.')
         string(name: 'TIMESTAMP', defaultValue: '', description: 'Optional timestamp to add for nightly builds.')
