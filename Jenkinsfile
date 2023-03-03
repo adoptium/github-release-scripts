@@ -15,7 +15,7 @@ target/linux/x64/**/*.tar.gz,target/linux/x64/**/*.sha256.txt,target/linux/x64/*
 Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_linux*.sig''')
         string(name: 'ARTIFACTS_TO_SKIP', defaultValue: '', description: 'For example in most release builds we skip the testimage: *testimage*.')
         string(name: 'TIMESTAMP', defaultValue: '', description: 'Optional timestamp to add for nightly builds.')
-        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Tick this box to actually release the binary to GitHub')
+        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Tick this box will not release the binary to GitHub')
         booleanParam(name: 'UPLOAD_TESTRESULTS_ONLY', defaultValue: false, description: 'Tick this box to actually release the binary to GitHub')
     }
     stages {
@@ -51,8 +51,8 @@ Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_l
                         step([$class: 'CopyArtifact',
                             fingerprintArtifacts: true,
                             flatten: true,
-                            filter: "${ARTIFACTS_TO_COPY}",
-                            excludes: "${ARTIFACTS_TO_SKIP}",
+                            filter: "${params.ARTIFACTS_TO_COPY}",
+                            excludes: "${params.ARTIFACTS_TO_SKIP}",
                             projectName: "${upstreamJobName}",
                             selector: [$class: 'SpecificBuildSelector', buildNumber: "${upstreamJobNumber}"]])
 
