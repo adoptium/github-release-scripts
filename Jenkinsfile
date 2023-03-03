@@ -2,6 +2,9 @@
 
 pipeline {
     agent { label 'master' }
+    options {
+        copyArtifactPermission('*');
+    }
     parameters {
         password(name: 'GITHUB_TOKEN', defaultValue: 'SECRET', description: 'Leave this')
         string(name: 'TAG', defaultValue: '', description: 'The GitHub tag of the release, e.g. jdk-12+33')
@@ -55,7 +58,7 @@ Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_l
                             excludes: "${params.ARTIFACTS_TO_SKIP}",
                             projectName: "${upstreamJobName}",
                             selector: [$class: 'SpecificBuildSelector', buildNumber: "${upstreamJobNumber}"]])
-
+                        sh 'printenv'
                         sh 'JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 ./sbin/Release.sh'
                         //withCredentials([usernamePassword(credentialsId: 'eclipse_temurin_bot_email_and_token', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {}
                     } catch (Exception err) {
