@@ -33,9 +33,11 @@ class UploadAdoptReleaseFiles {
     void release() {
         def grouped = files.groupBy {
             switch (it.getName()) {
-                // Only release file names containing "hotspot" or "sources"
+                // Only release file names containing certain patterns
+                // to avoid publication of non-temurin builds
                 case ~/.*hotspot.*/: "adopt"; break;
                 case ~/.*sources.*/: "adopt"; break;
+                case ~/.*release-notes.*/: "adopt"; break;
                 case ~/.*AQAvitTapFiles.*/: "adopt"; break;
             }
         }
