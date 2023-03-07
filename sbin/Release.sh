@@ -148,7 +148,7 @@ RELEASE_OPTION=""
 if [ "$RELEASE" == "true" ]; then
   description="Official Release of $TAG"
   RELEASE_OPTION="--release"
-else if [ "$UPLOAD_TESTRESULTS_ONLY" == "true" ]; then
+elif [ "$UPLOAD_TESTRESULTS_ONLY" == "true" ]; then
   echo "Test results are only needed to upload for releases!"
   exit 1
 else
@@ -165,6 +165,6 @@ if [ "$DRY_RUN" == "false" ]; then
     # Run releaseCheck.sh to check that the correct number of artifacts are live
     if [ -z "$TIMESTAMP" -a "$UPLOAD_TESTRESULTS_ONLY" = "false" ]; then
       echo "*** PERFORMING RELEASE CHECK TO SEE IF THERE ARE ANY UNEXPECTED PROBLEMS ***"
-      ./sbin/releaseCheck.sh ${VERSION#JDK} $TAG VERBOSE
+      .releaseCheck.sh ${VERSION#JDK} $TAG VERBOSE
     fi
 fi
