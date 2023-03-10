@@ -26,6 +26,8 @@
 # documentation of the variables using the POSIX standard
 #
 ###################################################################
+set -x
+set -eo pipefail
 
 # Our timestamps must fit this particular format: YYYY-DD-MM-hh-mm, e.g. 2021-07-30-16-11
 timestampRegex="[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}"
