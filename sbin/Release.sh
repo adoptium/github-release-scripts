@@ -143,7 +143,7 @@ if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
   done
   # Grab the list of files to upload
   # NOTE: If adding something here you may need to change the EXPECTED values in releaseCheck.sh
-  files=$(find $PWD \( -name "*.tar.gz" -o -name "*.sha256.txt" -o -name "*.zip" -o -name "*.pkg" -o -name "*.msi" -o -name "*.json" -o -name "*.sig" \) -exec basename {} \; | tr '\n' ' ')
+  files=$(find $PWD \( -name "*.tar.gz" -o -name "*.sha256.txt" -o -name "*.zip" -o -name "*.pkg" -o -name "*.msi" -o -name "*.json" -o -name "*.sig" \) | tr '\n' ' ')
 else 
   #TODO: enhance to a general file name - update groovy release() - case ~/.*AQAvitTapFiles.*/: "adopt"; break;
   files=$(ls "$PWD"/AQAvitTapFiles.tar.gz)
