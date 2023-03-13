@@ -87,10 +87,18 @@ if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
       if [ "${file}" != "${newName}" ]; then
         # Rename archive and its associated files with new timestamp
         echo "Renaming ${file} to ${newName}"
-        mv "${file}" "${newName}"
-        mv "${file}.sha256.txt" "${newName}.sha256.txt"
-        mv "${file}.json" "${newName}.json"
-        mv "${file}.sig" "${newName}.sig"
+        if [ -f "${file}" ]; then
+          mv "${file}" "${newName}"
+        fi
+        if [ -f "${file}.sha256.txt" ]; then
+          mv "${file}.sha256.txt" "${newName}.sha256.txt"
+        fi
+        if [ -f "${file}.json" ]; then
+          mv "${file}.json" "${newName}.json"
+        fi
+        if [ -f "${file}.sig" ]; then
+          mv "${file}.sig" "${newName}.sig"
+        fi
       fi
 
       # Fix checksum file name
@@ -112,7 +120,7 @@ if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
   # Rename any remaining non-archive file timestamps that have not already been renamed
   for file in OpenJDK*
   do
-    if [[ ! $file =~ $regexArchivesOnly ]];
+    if [[ ! $file =~ $regexArchivesOnly && ! $file =~ *makefailurelogs* ]];
     then
       echo "Processing non-archive file: $file";
 
@@ -134,9 +142,8 @@ if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
     fi
   done
   # Grab the list of files to upload
-  # TODO - shellcheck (SC2012) tells us that using find is better than ls here.
   # NOTE: If adding something here you may need to change the EXPECTED values in releaseCheck.sh
-  files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json,*.sig} | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
+  files=$(find $PWD \( -name "OpenJDK*.tar.gz" -o -name "OpenJDK*.sha256.txt" -o -name "OpenJDK*.zip" -o -name "OpenJDK*.pkg" -o -name "OpenJDK*.msi" -o -name "OpenJDK*.json" -o -name "OpenJDK*.sig" \) | grep -v "makefailurelogs" | tr '\n' ' ')
 else 
   #TODO: enhance to a general file name - update groovy release() - case ~/.*AQAvitTapFiles.*/: "adopt"; break;
   files=$(ls "$PWD"/AQAvitTapFiles.tar.gz)
