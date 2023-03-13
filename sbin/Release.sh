@@ -87,10 +87,18 @@ if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
       if [ "${file}" != "${newName}" ]; then
         # Rename archive and its associated files with new timestamp
         echo "Renaming ${file} to ${newName}"
-        [ -f "${file}" ] && mv "${file}" "${newName}"
-        [ -f "${file}.sha256.txt" ] && mv "${file}.sha256.txt" "${newName}.sha256.txt"
-        [ -f "${file}.json" ] && mv "${file}.json" "${newName}.json"
-        [ -f "${file}.sig" ] && mv "${file}.sig" "${newName}.sig"
+        if [ -f "${file}" ]; then
+          mv "${file}" "${newName}"
+        fi
+        if [ -f "${file}.sha256.txt" ]; then
+          mv "${file}.sha256.txt" "${newName}.sha256.txt"
+        fi
+        if [ -f "${file}.json" ]; then
+          mv "${file}.json" "${newName}.json"
+        fi
+        if [ -f "${file}.sig" ]; then
+          mv "${file}.sig" "${newName}.sig"
+        fi
       fi
 
       # Fix checksum file name
