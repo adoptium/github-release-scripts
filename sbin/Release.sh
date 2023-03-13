@@ -144,7 +144,9 @@ if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
   # Grab the list of files to upload
   # TODO - shellcheck (SC2012) tells us that using find is better than ls here.
   # NOTE: If adding something here you may need to change the EXPECTED values in releaseCheck.sh
+  echo "HERE1"
   files=$(ls "$PWD"/OpenJDK*{.tar.gz,.sha256.txt,.zip,.pkg,.msi,.json,*.sig} | grep -v makefailurelogs | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g')
+  echo "HERE2"
 else 
   #TODO: enhance to a general file name - update groovy release() - case ~/.*AQAvitTapFiles.*/: "adopt"; break;
   files=$(ls "$PWD"/AQAvitTapFiles.tar.gz)
