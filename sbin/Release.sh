@@ -120,7 +120,7 @@ if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
   # Rename any remaining non-archive file timestamps that have not already been renamed
   for file in OpenJDK*
   do
-    if [[ ! $file =~ $regexArchivesOnly && ! $file =~ *makefailurelogs* ]];
+    if [[ ! $file =~ $regexArchivesOnly && $file != *"makefailurelogs"* ]];
     then
       echo "Processing non-archive file: $file";
 
