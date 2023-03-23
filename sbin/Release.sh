@@ -174,6 +174,6 @@ if [ "$DRY_RUN" == "false" ]; then
     # Run releaseCheck.sh to check that the correct number of artifacts are live
     if [ -z "$TIMESTAMP" -a "$UPLOAD_TESTRESULTS_ONLY" = "false" ]; then
       echo "*** PERFORMING RELEASE CHECK TO SEE IF THERE ARE ANY UNEXPECTED PROBLEMS ***"
-      .releaseCheck.sh ${VERSION#JDK} $TAG VERBOSE
+      ../sbin/releaseCheck.sh ${VERSION#JDK} $TAG VERBOSE
     fi
 fi
