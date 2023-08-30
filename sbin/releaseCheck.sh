@@ -18,8 +18,7 @@ curl -q https://api.github.com/repos/adoptium/temurin${TEMURIN_VERSION}-binaries
 
 #### LINUX (ALL)
 for ARCH in x64 aarch64 ppc64le s390x arm; do
-  # jre, jdk, debugimage, static-libs (Except JDK8) in base, json, sha256, GPG sig. SBOM ONLY HAS 2
-  EXPECTED=19; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=15
+  EXPECTED=23; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=15
   if ! [ "${TEMURIN_VERSION}" -eq 8 -a "$ARCH" = "s390x" ]; then
     ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_linux | wc -l)
     if [ $ACTUAL -eq $EXPECTED ]
@@ -29,7 +28,7 @@ for ARCH in x64 aarch64 ppc64le s390x arm; do
       if [ $ACTUAL -eq 0 ]; then
         echo "Linux on $ARCH: Not published:"
       else
-        echo "Linux on $ARCH: Incomplete: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 2 SBOM)"
+        echo "Linux on $ARCH: Incomplete: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 2 SBOM)"
       fi
       [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_linux
     fi
@@ -46,7 +45,7 @@ for ARCH in ppc64; do
     if [ $ACTUAL -eq 0 ]; then
       echo "AIX on $ARCH: Not published:"
     else
-      echo "AIX on $ARCH: Incomplete: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+      echo "AIX on $ARCH: Incomplete: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
     fi
     [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_aix
   fi
@@ -62,7 +61,7 @@ for ARCH in x64; do
     if [ $ACTUAL -eq 0 ]; then
       echo "Alpine on $ARCH: Not published:"
     else
-      echo "Alpine on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+      echo "Alpine on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
     fi
     [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_alpine
   fi
@@ -79,7 +78,7 @@ if [ "${TEMURIN_VERSION}" -eq 8 ]; then
       if [ $ACTUAL -eq 0 ]; then
         echo "Solaris on $ARCH: Not published:"
       else
-        echo "Solaris on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+        echo "Solaris on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
       fi
       [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_solaris
     fi
@@ -88,26 +87,26 @@ fi
 
 #### WINDOWS
 for ARCH in x64 x86-32; do
-  # jre, jdk, jre-msi, jdk-msi, debugimage, static-libs (Except JDK8) in base, json, sha256
-  EXPECTED=27; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=23
-  ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_windows | wc -l)
-  if [ $ACTUAL -eq $EXPECTED ]
-  then
-     echo "Windows on $ARCH: OK!"
-  else
-    if [ $ACTUAL -eq 0 ]; then
-      echo "Windows on $ARCH: Not published"
+  if [ "${TEMURIN_VERSION}" -lt 20 -a "${ARCH}" = "x86-32" ]; then
+    EXPECTED=31; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=23
+    ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_windows | wc -l)
+    if [ $ACTUAL -eq $EXPECTED ]
+    then
+       echo "Windows on $ARCH: OK!"
     else
-      echo "Windows on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED (Expect jre, jdk, msi-jre msi-jdk, debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+      if [ $ACTUAL -eq 0 ]; then
+        echo "Windows on $ARCH: Not published"
+      else
+        echo "Windows on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED (Expect jre, jdk, msi-jre msi-jdk, testimage (Not JDK8), debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+      fi
+      [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_windows
     fi
-    [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_windows
   fi
 done
 
 ### MAC
 for ARCH in x64 aarch64; do
-  # jre, jdk, jre-pkg, jdk-pkg, debugimage, static-libs (Except JDK8) in base, json, sha256
-  EXPECTED=27; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=23
+  EXPECTED=31; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=23
   if ! [ "${TEMURIN_VERSION}" -eq 8 -a "$ARCH" = "aarch64" ]; then
     ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_mac | wc -l)
     if [ $ACTUAL -eq $EXPECTED ]
@@ -117,7 +116,7 @@ for ARCH in x64 aarch64; do
       if [ $ACTUAL -eq 0 ]; then
         echo "MacOS on $ARCH: Not Published:"
       else
-        echo "MacOS on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED (Expect jre, jdk, pkg-jre, pkg-jdk, debugimage, static-libs (Not JD8) in base, json, sha256, sig)"
+        echo "MacOS on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED (Expect jre, jdk, pkg-jre, pkg-jdk, testimage (Not JDK8), debugimage, static-libs (Not JD8) in base, json, sha256, sig)"
       fi
       [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_mac
     fi
