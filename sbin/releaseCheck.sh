@@ -9,6 +9,8 @@ TEMURIN_VERSION=$1
 TEMURIN_TAG=$2
 VERBOSE=$3
 
+checkRc=0
+
 echo Grabbing information from https://github.com/adoptium/temurin${TEMURIN_VERSION}-binaries/releases/tag/${TEMURIN_TAG}
 FILTER=$(echo $TEMURIN_TAG | sed 's/+/%2B/g')
 echo FILTER IS: $FILTER
@@ -29,6 +31,7 @@ for ARCH in x64 aarch64 ppc64le s390x arm; do
         echo "Linux on $ARCH: Not published:"
       else
         echo "Linux on $ARCH: Incomplete: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 2 SBOM)"
+        checkRc=3
       fi
       [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_linux
     fi
@@ -46,6 +49,7 @@ for ARCH in ppc64; do
       echo "AIX on $ARCH: Not published:"
     else
       echo "AIX on $ARCH: Incomplete: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+      checkRc=3
     fi
     [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_aix
   fi
@@ -62,6 +66,7 @@ for ARCH in x64; do
       echo "Alpine on $ARCH: Not published:"
     else
       echo "Alpine on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+      checkRc=3
     fi
     [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_alpine
   fi
@@ -79,6 +84,7 @@ if [ "${TEMURIN_VERSION}" -eq 8 ]; then
         echo "Solaris on $ARCH: Not published:"
       else
         echo "Solaris on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+        checkRc=3
       fi
       [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_solaris
     fi
@@ -98,6 +104,7 @@ for ARCH in x64 x86-32; do
         echo "Windows on $ARCH: Not published"
       else
         echo "Windows on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED (Expect jre, jdk, msi-jre msi-jdk, testimage (Not JDK8), debugimage, static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+        checkRc=3
       fi
       [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_windows
     fi
@@ -117,6 +124,7 @@ for ARCH in x64 aarch64; do
         echo "MacOS on $ARCH: Not Published:"
       else
         echo "MacOS on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED (Expect jre, jdk, pkg-jre, pkg-jdk, testimage (Not JDK8), debugimage, static-libs (Not JD8) in base, json, sha256, sig)"
+        checkRc=3
       fi
       [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_mac
     fi
@@ -132,3 +140,7 @@ else
 fi
 
 rm releaseCheck.$$.tmp
+
+# Exit code 3 for UNSTABLE setting
+exit $checkRc
+
