@@ -42,8 +42,8 @@ class UploadAdoptReleaseFiles {
             }
         }
         GHRepository repo = getRepo("adopt")
-       // GHRelease release = getRelease(repo)
-       // uploadFiles(release, grouped.get("adopt"))
+        GHRelease release = getRelease(repo)
+        uploadFiles(release, grouped.get("adopt"))
     }
 
     private GHRepository getRepo(String vendor) {
@@ -54,7 +54,6 @@ class UploadAdoptReleaseFiles {
         }
 
         println("Using Github server:'${server}'")
-        println("Using GIThub_TOKEN:'${token}'")
         GitHub github = GitHub.connectUsingOAuth(server, token)
 
         github
@@ -70,7 +69,6 @@ class UploadAdoptReleaseFiles {
         // jdk11 => 11
         def numberVersion = version.replaceAll(/[^0-9]/, "")
         def repoName = "${org}/temurin${numberVersion}-binaries"
-        println("repo Name is ${repoName}")
 
         if (vendor != "adopt") {
             repoName = "${org}/open${version}-${vendor}-binaries"
