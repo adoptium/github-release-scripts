@@ -18,7 +18,7 @@ Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_l
         string(name: 'ARTIFACTS_TO_SKIP', defaultValue: '', description: 'For example in most release builds we skip the testimage: *testimage*.')
         string(name: 'TIMESTAMP', defaultValue: '', description: 'Optional timestamp to add for nightly builds.')
         booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Tick this box will not release the binary to GitHub')
-        booleanParam(name: 'UPLOAD_TESTRESULTS_ONLY', defaultValue: false, description: 'Tick this box to actually release test tap results to GitHub')
+        booleanParam(name: 'UPLOAD_TESTRESULTS_ONLY', defaultValue: false, description: 'Tick this box to release test tap results to GitHub')
     }
     stages {
         stage('Upload Releases') {
