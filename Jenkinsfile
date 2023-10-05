@@ -59,7 +59,7 @@ Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_l
                             selector: [$class: 'SpecificBuildSelector', buildNumber: "${upstreamJobNumber}"]])
                         
                         withCredentials([string(credentialsId: "${params.GITHUB_CREDENTIAL}", variable: 'secretToken')]) {
-                            withEnv(["GITHUB_TOKEN=${secretToken}"]) {
+                            withEnv(['GITHUB_TOKEN=' + secretToken]) {
                                 sh '''
                                     export VERSION=`echo $VERSION | awk '{print toupper($0)}'`
                                     JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 ./sbin/Release.sh
