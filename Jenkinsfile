@@ -62,7 +62,7 @@ Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_l
                             withEnv(['GITHUB_TOKEN=' + secretToken]) {
                                 sh '''
                                     export VERSION=`echo $VERSION | awk '{print toupper($0)}'`
-                                    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 ./sbin/Release.sh
+                                    JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./sbin/Release.sh
                                 '''
                             }
                         }    
