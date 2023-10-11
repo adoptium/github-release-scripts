@@ -6,7 +6,6 @@ pipeline {
         copyArtifactPermission('*');
     }
     parameters {
-        password(name: 'GITHUB_TOKEN', defaultValue: 'SECRET', description: 'Leave this')
         string(name: 'TAG', defaultValue: '', description: 'The GitHub tag of the release, e.g. jdk-12+33')
         choice(name: 'VERSION', choices: ['jdk21', 'jdk20', 'jdk19', 'jdk17', 'jdk11', 'jdk8'], description: 'Which JDK Version?')
         string(name: 'UPSTREAM_JOB_NAME', defaultValue: '', description: 'The full path to the pipeline / job, e.g. build-scripts/openjdk12-pipeline')
@@ -19,7 +18,7 @@ Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_l
         string(name: 'ARTIFACTS_TO_SKIP', defaultValue: '', description: 'For example in most release builds we skip the testimage: *testimage*.')
         string(name: 'TIMESTAMP', defaultValue: '', description: 'Optional timestamp to add for nightly builds.')
         booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Tick this box will not release the binary to GitHub')
-        booleanParam(name: 'UPLOAD_TESTRESULTS_ONLY', defaultValue: false, description: 'Tick this box to actually release the binary to GitHub')
+        booleanParam(name: 'UPLOAD_TESTRESULTS_ONLY', defaultValue: false, description: 'Tick this box to release test tap results to GitHub')
     }
     stages {
         stage('Upload Releases') {
@@ -58,10 +57,15 @@ Or **/*x64_linux*.tar.gz,**/*x64_linux*.sha256.txt,**/*x64_linux*.json,**/*x64_l
                             excludes: "${params.ARTIFACTS_TO_SKIP}",
                             projectName: "${upstreamJobName}",
                             selector: [$class: 'SpecificBuildSelector', buildNumber: "${upstreamJobNumber}"]])
-                        sh '''
-                        export VERSION=`echo $VERSION | awk '{print toupper($0)}'`
-                        JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 ./sbin/Release.sh
-                        '''
+                        
+                        withCredentials([string(credentialsId: "${params.GITHUB_CREDENTIAL}", variable: 'secretToken')]) {
+                            withEnv(['GITHUB_TOKEN=' + secretToken]) {
+                                sh '''
+                                    export VERSION=`echo $VERSION | awk '{print toupper($0)}'`
+                                    JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./sbin/Release.sh
+                                '''
+                            }
+                        }    
                     } catch (Exception err) {
                         echo err.getMessage()
                         currentBuild.result = 'FAILURE'
