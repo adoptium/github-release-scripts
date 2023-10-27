@@ -21,6 +21,7 @@ curl -q https://api.github.com/repos/adoptium/temurin${TEMURIN_VERSION}-binaries
 #### LINUX (ALL)
 for ARCH in x64 aarch64 ppc64le s390x arm; do
   EXPECTED=23; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=15
+  # Temurin does not ship on Linux/s390x for JDK8
   if ! [ "${TEMURIN_VERSION}" -eq 8 -a "$ARCH" = "s390x" ]; then
     ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_linux | wc -l)
     if [ $ACTUAL -eq $EXPECTED ]
@@ -56,19 +57,22 @@ for ARCH in ppc64; do
 done
 
 ### Alpine - Same number of artifacts as Linux so don't adjust EXPECTED
-for ARCH in x64; do
-  ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_alpine | wc -l)
-  if [ $ACTUAL -eq $EXPECTED ]
-  then
-     echo "Alpine on $ARCH: OK!"
-  else
-    if [ $ACTUAL -eq 0 ]; then
-      echo "Alpine on $ARCH: Not published:"
+for ARCH in x64 aarch64; do
+  # Alpine/aarch64 is only included from JDK21
+  if [ "${TEMURIN_VERSION}" -ge 21 -o "${ARCH}" == "x64" ]; then
+    ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_alpine | wc -l)
+    if [ $ACTUAL -eq $EXPECTED ]
+    then
+       echo "Alpine on $ARCH: OK!"
     else
-      echo "Alpine on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
-      checkRc=3
+      if [ $ACTUAL -eq 0 ]; then
+        echo "Alpine on $ARCH: Not published:"
+      else
+        echo "Alpine on $ARCH: INCOMPLETE: $ACTUAL/$EXPECTED Expect jre, jdk, debugimage, testimage (Not JDK8), static-libs (Not JDK8) in base, json, sha256, GPG sig, plus 3 SBOMs"
+        checkRc=3
+      fi
+      [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_alpine
     fi
-    [ ! -z "$VERBOSE" ] && cat releaseCheck.$$.tmp | grep ${ARCH}_alpine
   fi
 done
  
@@ -93,7 +97,8 @@ fi
 
 #### WINDOWS
 for ARCH in x64 x86-32; do
-  if [ "${TEMURIN_VERSION}" -lt 20 -a "${ARCH}" = "x86-32" ]; then
+  # Windows 32-bit does not ship starting from JDk20
+  if [ "${TEMURIN_VERSION}" -lt 20 -o "${ARCH}" != "x86-32" ]; then
     EXPECTED=31; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=23
     ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_windows | wc -l)
     if [ $ACTUAL -eq $EXPECTED ]
