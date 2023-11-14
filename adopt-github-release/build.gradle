@@ -14,7 +14,7 @@ application {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.5.6'
-    compile 'org.kohsuke:github-api:1.127'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'org.codehaus.groovy:groovy-all:2.5.6'
+    implementation 'org.kohsuke:github-api:1.127'
+    compileOnly group: 'junit', name: 'junit', version: '4.12'
 }
