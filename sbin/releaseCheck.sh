@@ -59,7 +59,7 @@ done
 ### Alpine - Same number of artifacts as Linux so don't adjust EXPECTED
 for ARCH in x64 aarch64; do
   # Alpine/aarch64 is only included from JDK21
-  if [ "${TEMURIN_VERSION}" -ge 21 -o "${ARCH}" == "x64" ]; then
+  if [ "${TEMURIN_VERSION}" -ge 21 -o "${ARCH}" = "x64" ]; then
     ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_alpine | wc -l)
     if [ $ACTUAL -eq $EXPECTED ]
     then
