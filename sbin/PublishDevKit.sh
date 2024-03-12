@@ -58,6 +58,8 @@ for file in devkit-*
     then
       echo "ERROR: devkit file does not match required regex pattern: ${file}" 
       valid_files=false
+    else
+      echo "DevKit file: $file"
     fi
   done
 
@@ -68,10 +70,12 @@ fi
 
 files=$(find $PWD \( -name "devkit-*" \) | tr '\n' ' ')
 
-description="Release of $TAG"
+if [ "$DRY_RUN" == "false" ]; then
+  description="Release of $TAG"
 
-# Hand over to the Groovy script that uses the GitHub API to actually create the release and upload files
-cd adopt-github-release || exit 1
-chmod +x gradlew
-GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--isDevKit --version \"${TAG}\" --tag \"${TAG}\" --description \"${description}\" ${server} ${org} $files"
+  # Hand over to the Groovy script that uses the GitHub API to actually create the release and upload files
+  cd adopt-github-release || exit 1
+  chmod +x gradlew
+  GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--isDevKit --version \"${TAG}\" --tag \"${TAG}\" --description \"${description}\" ${server} ${org} $files"
+fi
 
