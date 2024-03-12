@@ -76,6 +76,6 @@ if [ "$DRY_RUN" == "false" ]; then
   # Hand over to the Groovy script that uses the GitHub API to actually create the release and upload files
   cd adopt-github-release || exit 1
   chmod +x gradlew
-  GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--isDevKit --version \"${TAG}\" --tag \"${TAG}\" --description \"${description}\" ${server} ${org} $files"
+  GRADLE_USER_HOME=./gradle-cache ./gradlew --no-daemon run --args="--isDevKit --release --version \"${TAG}\" --tag \"${TAG}\" --description \"${description}\" ${server} ${org} $files"
 fi
 
