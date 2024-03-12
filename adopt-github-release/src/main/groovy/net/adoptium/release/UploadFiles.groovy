@@ -19,11 +19,13 @@ class UploadAdoptReleaseFiles {
     private final String version
     private final String server
     private final String org
+    private final boolean isDevKit
 
-    UploadAdoptReleaseFiles(String tag, String description, boolean release, String version, String server, String org, List<File> files) {
+    UploadAdoptReleaseFiles(String tag, String description, boolean release, boolean isDevKit, String version, String server, String org, List<File> files) {
         this.tag = tag
         this.description = description
         this.release = release
+        this.isDevKit = isDevKit 
         this.files = files
         this.version = version
         this.server = server
@@ -31,7 +33,12 @@ class UploadAdoptReleaseFiles {
     }
 
     void release() {
-        def grouped = files.groupBy {
+        GHRepository repo = getRepo("adopt")
+        GHRelease release = getRelease(repo)
+        if (isDevKit) {
+          uploadFiles(release, files)
+        } else {
+          def grouped = files.groupBy {
             switch (it.getName()) {
                 // Only release file names containing certain patterns
                 // to avoid publication of non-temurin builds
@@ -40,10 +47,9 @@ class UploadAdoptReleaseFiles {
                 case ~/.*release-notes.*/: "adopt"; break;
                 case ~/.*AQAvitTapFiles.*/: "adopt"; break;
             }
+          }
+          uploadFiles(release, grouped.get("adopt"))
         }
-        GHRepository repo = getRepo("adopt")
-        GHRelease release = getRelease(repo)
-        uploadFiles(release, grouped.get("adopt"))
     }
 
     private GHRepository getRepo(String vendor) {
@@ -66,12 +72,18 @@ class UploadAdoptReleaseFiles {
                         (int) TimeUnit.SECONDS.toMillis(120)))
 
         println("Using Github org:'${org}'")
-        // jdk11 => 11
-        def numberVersion = version.replaceAll(/[^0-9]/, "")
-        def repoName = "${org}/temurin${numberVersion}-binaries"
 
-        if (vendor != "adopt") {
-            repoName = "${org}/open${version}-${vendor}-binaries"
+        def repoName
+        if (isDevKit) {
+          repoName = "${org}/devkit-binaries"
+        } else {
+          // jdk11 => 11
+          def numberVersion = version.replaceAll(/[^0-9]/, "")
+          repoName = "${org}/temurin${numberVersion}-binaries"
+
+          if (vendor != "adopt") {
+              repoName = "${org}/open${version}-${vendor}-binaries"
+          }
         }
 
         return github.getRepository(repoName)
@@ -137,6 +149,7 @@ private OptionAccessor parseArgs(String[] args) {
                 t longOpt: 'tag', type: String, args: 1, 'Tag name'
                 d longOpt: 'description', type: String, args: 1, 'Release description'
                 r longOpt: 'release', 'Is a release build'
+                k longOpt: 'isDevKit', 'Is a DevKit build'
                 h longOpt: 'help', 'Show usage information'
                 s longOpt: 'server', type: String, args: 1, optionalArg: true, defaultValue: 'https://api.github.com', 'Github server'
                 o longOpt: 'org', type: String, args: 1, optionalArg: true, defaultValue: 'adoptium', 'Github org'
