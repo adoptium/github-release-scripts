@@ -132,6 +132,7 @@ static void main(String[] args) {
             options.t,
             options.d,
             options.r,
+            options.k,
             options.v,
             options.s,
             options.o,
