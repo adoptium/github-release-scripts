@@ -54,12 +54,27 @@ fi
 valid_files=true
 for file in devkit-*
   do
-    if [[ ! $file =~ $regex ]];
+    if [[ $file =~ $regex ]];
     then
+      echo "DevKit file: $file"
+      FILE_COMPILER=${BASH_REMATCH[1]};
+      FILE_VERSION=${BASH_REMATCH[2]};
+      FILE_SYSROOT=${BASH_REMATCH[3]};
+      FILE_ARCH=${BASH_REMATCH[4]};
+      FILE_SUFFIX=${BASH_REMATCH[5]};
+      FILE_BUILD=${BASH_REMATCH[6]};
+      FILE_EXTENSION=${BASH_REMATCH[7]};
+
+      file_tag="${FILE_COMPILER}-${FILE_VERSION}-${FILE_SYSROOT}-${FILE_BUILD}"
+
+      # Validate tarball is valid for publishing as TAG release
+      if [[ "${file_tag}" != "${TAG}" ]; then
+        echo "ERROR: devkit file is not valid for publishing under release tag ${TAG} : ${file}"
+        valid_files=false
+      fi
+    else
       echo "ERROR: devkit file does not match required regex pattern: ${file}" 
       valid_files=false
-    else
-      echo "DevKit file: $file"
     fi
   done
 
