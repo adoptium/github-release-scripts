@@ -69,7 +69,6 @@ for file in devkit-*
 
       # Validate tarball is valid for publishing as TAG release
       if [[ "${file_tag}" != "${TAG}" ]]; then
-        echo "${file_tag}"
         echo "ERROR: devkit file is not valid for publishing under release tag ${TAG} : ${file}"
         valid_files=false
       fi
