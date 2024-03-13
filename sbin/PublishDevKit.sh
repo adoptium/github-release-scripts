@@ -28,7 +28,7 @@ set -eo pipefail
 # devkit-gcc-11.3.0-Centos7.6.1810-x86_64-linux-gnu-b01.tar.gz
 
 #              (compiler    )  (version      ) (sysroot       ) (arch          )(suffix    ) (build       )  (extension                                )
-regex="^devkit-([[:alnum:]]+)-([[:digit:]\.]+)-([[:alnum:]\.]+)-([[:alnum:]\_]+)(-linux-gnu)-([[:alnum:]]+)\.(tar\.gz|tar\.gz\.sha256\.txt|tar\.gz\.sig)$";
+regex="^devkit-([[:alnum:]]+)-([[:digit:]\.]+)-([[:alnum:]\.]+)-([[:alnum:]\_]+)(-linux-gnu)-([[:alnum:]]+)\.(tar\.xz|tar\.xz\.sha256\.txt|tar\.xz\.sig)$";
 
 # Check that a TAG has been passed in.
 if [ -z "${TAG}" ]; then
