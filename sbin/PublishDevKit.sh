@@ -25,10 +25,10 @@
 set -eo pipefail
 
 # eg: artifact:
-# devkit-gcc-11.3.0-Centos7.6.1810-x86_64-linux-gnu-b01.tar.gz
+# devkit-gcc-11.3.0-Centos7.6.1810-b01-x86_64-linux-gnu.tar.gz
 
-#              (compiler    )  (version      ) (sysroot       ) (arch          )(suffix    ) (build       )  (extension                                )
-regex="^devkit-([[:alnum:]]+)-([[:digit:]\.]+)-([[:alnum:]\.]+)-([[:alnum:]\_]+)(-linux-gnu)-([[:alnum:]]+)\.(tar\.xz|tar\.xz\.sha256\.txt|tar\.xz\.sig)$";
+#              (compiler    )  (version      ) (sysroot       ) (build       )-(arch          )(suffix    )  (extension                                )
+regex="^devkit-([[:alnum:]]+)-([[:digit:]\.]+)-([[:alnum:]\.]+)-([[:alnum:]]+)-([[:alnum:]\_]+)(-linux-gnu)\.(tar\.xz|tar\.xz\.sha256\.txt|tar\.xz\.sig)$";
 
 # Check that a TAG has been passed in.
 if [ -z "${TAG}" ]; then
