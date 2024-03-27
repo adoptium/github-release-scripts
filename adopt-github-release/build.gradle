@@ -11,7 +11,7 @@ repositories {
 }
 application {
     mainClassName = 'net.adoptium.release.UploadFiles'
-    applicationDefaultJvmArgs = ['-Xmx2g']
+    applicationDefaultJvmArgs = ['-Xmx4g']
 }
 
 dependencies {
