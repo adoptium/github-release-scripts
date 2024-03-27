@@ -15,7 +15,7 @@ echo Grabbing information from https://github.com/adoptium/temurin${TEMURIN_VERS
 FILTER=$(echo $TEMURIN_TAG | sed 's/+/%2B/g')
 echo FILTER IS: $FILTER
 curl -q https://api.github.com/repos/adoptium/temurin${TEMURIN_VERSION}-binaries/releases |
-   grep "$FILTER" |
+   grep "/$FILTER/" |
    awk -F'"' '/browser_download_url/{print$4}' > releaseCheck.$$.tmp || exit 1
 
 #### LINUX (ALL)
