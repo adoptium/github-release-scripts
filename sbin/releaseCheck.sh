@@ -15,7 +15,7 @@ echo Grabbing information from https://github.com/adoptium/temurin${TEMURIN_VERS
 FILTER=$(echo $TEMURIN_TAG | sed 's/+/%2B/g')
 echo FILTER IS: $FILTER
 curl -q https://api.github.com/repos/adoptium/temurin${TEMURIN_VERSION}-binaries/releases |
-   grep "$FILTER" |
+   grep "/$FILTER/" |
    awk -F'"' '/browser_download_url/{print$4}' > releaseCheck.$$.tmp || exit 1
 
 #### LINUX (ALL)
@@ -59,7 +59,7 @@ done
 ### Alpine - Same number of artifacts as Linux so don't adjust EXPECTED
 for ARCH in x64 aarch64; do
   # Alpine/aarch64 is only included from JDK21
-  if [ "${TEMURIN_VERSION}" -ge 21 -o "${ARCH}" == "x64" ]; then
+  if [ "${TEMURIN_VERSION}" -ge 21 -o "${ARCH}" = "x64" ]; then
     ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_alpine | wc -l)
     if [ $ACTUAL -eq $EXPECTED ]
     then
