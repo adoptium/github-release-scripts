@@ -24,3 +24,24 @@ jobs:
     - name: Run Groovy Tests
       working-directory: adopt-github-release
       run: ./gradlew --info test
+
+  test_node:
+    name: Node
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+
+    - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: 'generate-release-notes/generate-release-notes/package-lock.json'
+
+    - name: Install Node Dependencies
+      working-directory: generate-release-notes/generate-release-notes
+      run: npm install
+
+    - name: Run Tests
+      working-directory: generate-release-notes/generate-release-notes
+      run: npm test

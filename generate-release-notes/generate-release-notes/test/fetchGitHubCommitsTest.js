@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { fetchCommits } from '../lib/fetchGItHubCommits.js';
+import { fetchCommits } from '../lib/fetchGitHubCommits.js';
 import mockAPIResponse from './mock/mockAPIResponse.json' assert { type: 'json' };
 
 const repository = 'adoptium/jdk17u'
