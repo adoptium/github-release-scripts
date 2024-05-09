@@ -155,7 +155,7 @@ echo ""
 
 RELEASE_OPTION=""
 if [ "$RELEASE" == "true" ]; then
-  description="Official Release of $TAG"
+  description="Official Eclipse Temurin Release of $TAG"
   RELEASE_OPTION="--release"
 elif [ "$UPLOAD_TESTRESULTS_ONLY" == "true" ]; then
   echo "Test results are only needed to upload for releases!"
