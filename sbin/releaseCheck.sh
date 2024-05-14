@@ -24,7 +24,7 @@ for ARCH in x64 aarch64 ppc64le s390x arm riscv64; do
   # Exclude checks for platform/versions that Temurin does not ship on
   if ! [ \( "${TEMURIN_VERSION}" -eq  8 -a "$ARCH" = "s390x" \) -o \
          \( "${TEMURIN_VERSION}" -ge 20 -a "$ARCH" = "arm"   \) -o \
-         \( "${TEMURIN_VERSION}" -lt 21 -a "$ARCH" = "riscv64" \) ]; then
+         \( "${TEMURIN_VERSION}" -lt 17 -a "$ARCH" = "riscv64" \) ]; then
     ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_linux | wc -l)
     if [ $ACTUAL -eq $EXPECTED ]
     then
