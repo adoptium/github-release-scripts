@@ -98,9 +98,10 @@ if [ "${TEMURIN_VERSION}" -eq 8 ]; then
 fi
 
 #### WINDOWS
-for ARCH in x64 x86-32; do
-  # Windows 32-bit does not ship starting from JDk20
-  if [ "${TEMURIN_VERSION}" -lt 20 -o "${ARCH}" != "x86-32" ]; then
+for ARCH in aarch64 x64 x86-32; do
+  # Windows 32-bit does not ship starting from JDK20
+  # Windows aarch64 is only included from JDK21
+  if [ \( "${TEMURIN_VERSION}" -lt 20 -o "${ARCH}" != "x86-32" \) -a \( "${TEMURIN_VERSION}" -ge 21 -o "${ARCH}" != "aarch64" \) ]; then
     EXPECTED=31; [ "${TEMURIN_VERSION}" -eq 8 ] && EXPECTED=23
     ACTUAL=$(cat releaseCheck.$$.tmp | grep ${ARCH}_windows | wc -l)
     if [ $ACTUAL -eq $EXPECTED ]
