@@ -34,7 +34,7 @@ const JIRA_ISSUES = await fetchJiraIssues(version);
 
 // loop through the commits and add the release notes to the output
 for (const commit of commits) {
-console.log(`COMMIT ${commit}`)
+console.log(`COMMIT ${commit.id}`)
   let releaseNote = JIRA_ISSUES
     .find((issue) => issue.id === commit.id || issue.backportOf === commit.id);
 
