@@ -32,6 +32,7 @@ export default async function fetchReleaseNotes(version) {
         });
       }
 
+console.log(`ISSUE: ${issue.key}`)
       JIRA_ISSUES.push({
         id: issue.key,
         title: issue.fields.summary,
