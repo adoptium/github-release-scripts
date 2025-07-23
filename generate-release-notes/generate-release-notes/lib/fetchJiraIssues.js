@@ -5,7 +5,7 @@ export default async function fetchReleaseNotes(version) {
   const jql = `project=JDK AND (status in (Closed, Resolved))
     AND (resolution not in ("Won't Fix", "Duplicate", "Cannot Reproduce", "Not an Issue", "Withdrawn"))
     AND (labels not in (release-note, openjdk-na) OR labels is EMPTY)
-    AND (summary !~ "release note") AND (issuetype != CSR) AND fixVersion=${version}`;
+    AND (summary !~ "release note") AND (issuetype != CSR) AND (fixVersion in (${version}))`;
   // execute the initial fetch to get the total number of issues
   const totalQuery = await fetch(`${baseUrl + jql}&startAt=1&maxResults=1`);
   const initialRes = await totalQuery.json();
