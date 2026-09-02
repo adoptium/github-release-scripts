@@ -1,7 +1,7 @@
 // Description: Fetches the JIRA issues from bugs.openjdk.org
 export default async function fetchReleaseNotes(version) {
   // fetch the release notes from the bugs.openjdk.org
-  const baseUrl = 'https://bugs.openjdk.java.net/rest/api/2/search?jql=';
+  const baseUrl = 'https://bugs.openjdk.org/rest/api/2/search?jql=';
   const jql = `project=JDK AND (status in (Closed, Resolved))
     AND (resolution not in ("Won't Fix", "Duplicate", "Cannot Reproduce", "Not an Issue", "Withdrawn"))
     AND (labels not in (release-note, openjdk-na) OR labels is EMPTY)
@@ -38,7 +38,7 @@ export default async function fetchReleaseNotes(version) {
         priority: issue.fields.priority.id,
         component: issue.fields.components[0].name,
         subcomponent: `${issue.fields.components[0].name}${issue.fields.customfield_10008?.name ? `/${issue.fields.customfield_10008?.name}` : ''}`,
-        link: `https://bugs.openjdk.java.net/browse/${issue.key}`,
+        link: `https://bugs.openjdk.org/browse/${issue.key}`,
         type: issue.fields.issuetype.name,
         backportOf: parent || null,
       });

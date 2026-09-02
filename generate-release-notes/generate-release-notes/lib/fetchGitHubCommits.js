@@ -15,7 +15,10 @@ export const fetchCommits = async ({
     console.log(`Fetching commits from ${githubQuery}`);
     const githubResponse = await fetch(githubQuery);
     if (!githubResponse.ok) {
-      throw new Error(`Failed to fetch commits from ${githubQuery}, status: ${githubResponse.status}`);
+      const hint = githubResponse.status === 404
+        ? ` Check that the repository exists and both tags (${baseTag} and ${tag}) are present in it.`
+        : '';
+      throw new Error(`Failed to fetch commits from ${githubQuery}, status: ${githubResponse.status}.${hint}`);
     }
 
     const githubResponseJson = await githubResponse.json();
