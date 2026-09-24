@@ -9,11 +9,13 @@ export const fetchCommits = async ({
   let nextPage = true;
   let commits = [];
 
-  console.log(`Fetching commits for ${repository} between ${baseTag} and ${tag}...`);
+  const token = process.env.GITHUB_TOKEN;
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  console.log(`Fetching commits for ${repository} between ${baseTag} and ${tag} (${token ? 'authenticated' : 'unauthenticated'})...`);
   while (nextPage) {
     const githubQuery = `https://api.github.com/repos/${repository}/compare/${baseTag}...${tag}?per_page=${pageSize}&page=${page}`;
     console.log(`Fetching commits from ${githubQuery}`);
-    const githubResponse = await fetch(githubQuery);
+    const githubResponse = await fetch(githubQuery, { headers });
     if (!githubResponse.ok) {
       const hint = githubResponse.status === 404
         ? ` Check that the repository exists and both tags (${baseTag} and ${tag}) are present in it.`
