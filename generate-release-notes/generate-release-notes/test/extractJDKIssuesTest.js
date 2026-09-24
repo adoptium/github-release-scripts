@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { test } from 'node:test';
 import extractJDKIssues from '../lib/extractJDKIssues.js';
-import mockAPIResponse from './mock/mockAPIResponse.json' assert { type: 'json' };
+import mockAPIResponse from './mock/mockAPIResponse.json' with { type: 'json' };
 
 
 test('extractJDKIssues', async (t) => {
