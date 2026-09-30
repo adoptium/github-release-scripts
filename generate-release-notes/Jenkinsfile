@@ -1,0 +1,250 @@
+#!groovy
+
+// Created with the assistance of IBM Bob v2.0.3
+// Workaround to handle different versions of the Badge/Groovy Postbuild plugin.
+def appendSummaryText(summary, text) {
+    try {
+        def currentText = summary.getText() ?: ''
+        summary.setText(currentText + text)
+    } catch (Exception e) {
+        echo "setText failed, trying deprecated appendText: ${e.message}"
+        summary.appendText(text, false)
+    }
+}
+
+// Returns true when the tag follows the pre-JEP-322 JDK 8 scheme (e.g. jdk8u502-ga, jdk8u492-b07).
+def isJdk8Tag(String tag) {
+    return tag ==~ /^jdk8u.*/
+}
+
+// Parses a JEP-322 tag (JDK 9+) and returns a map of its components.
+//
+// Supported formats:
+//   jdk-26-ga             - Feature release (first introduction of a new JDK version)
+//   jdk-21.0.1+12         – CPU release (no PATCH)
+//   jdk-21.0.12.1+1       – CSPU release; jdk-21.0.12.1+1 and jdk-21.0.12.1-ga point to the same SHA
+//   jdk-21.0.12-ga        – GA alias for a standard release (no PATCH, no BUILD)
+//   jdk-21.0.12.1-ga      – GA alias for a patch release
+//
+// Returned map:
+//   feature  – major version number                     (e.g. "21")
+//   version  – full version string from the tag         (e.g. "21.0.12.1" or "21.0.12")
+//   patch    – PATCH segment, "0" when absent           (e.g. "1" or "0")
+//   build    – BUILD number after '+', "0" when absent  (e.g. "1" or "0")
+def parseJdkTag(String tag) {
+    // 1. Strip leading "jdk-" prefix
+    def withoutPrefix = tag.replaceFirst(/^jdk-/, '')
+
+    // 2. Strip optional qualifier (e.g. "-ga", "-ea"). A qualifier starts with '-'
+    //    followed by a non-digit character and runs to the end of the string.
+    def withoutQualifier = withoutPrefix.replaceFirst(/-[a-zA-Z].*$/, '')
+
+    // 3. Split on '+' to separate version from optional build number
+    def parts = withoutQualifier.tokenize('+')
+    if (parts.size() < 1 || parts.size() > 2) {
+        error("JDK_TAG '${tag}' does not match an expected JEP-322 format (jdk-FEATURE.INTERIM.UPDATE[.PATCH][+BUILD][-QUALIFIER])")
+    }
+    def build = parts.size() == 2 ? parts[1] : '0'
+
+    // 4. Split version on '.' → [FEATURE, INTERIM, UPDATE] or [FEATURE, INTERIM, UPDATE, PATCH]
+    def versionParts = parts[0].tokenize('.')
+    if (versionParts.size() < 3) {
+        error("JDK_TAG '${tag}' version segment '${parts[0]}' must contain at least FEATURE.INTERIM.UPDATE")
+    }
+    def patch   = versionParts.size() >= 4 ? versionParts[3] : '0'
+    // Preserve the full version string as it appears in the tag (3-part or 4-part)
+    def version = parts[0]
+
+    return [
+        feature: versionParts[0],
+        version: version,
+        patch  : patch,
+        build  : build,
+    ]
+}
+
+pipeline {
+    agent { label 'worker' }
+    parameters {
+        string(name: 'JDK_TAG',           defaultValue: '', description: 'Required. The JDK release tag, e.g. jdk-21.0.1+12 or jdk-21.0.12.1-ga.  Needs to match the tag used for building and publishing binaries.')
+        string(name: 'BASE_JDK_TAG',      defaultValue: '', description: 'Required. The base (previous) JDK tag to compare against, e.g. jdk-21.0.0+35 or jdk-21.0.12-ga')
+        string(name: 'GITHUB_REPOSITORY', defaultValue: '', description: 'Optional (JDK 9+, required for JDK 8). GitHub repository, e.g. adoptium/jdk21u or adoptium/jdk8u')
+        string(name: 'JDK_VERSION',       defaultValue: '', description: 'Optional (JDK 9+, required for JDK 8). Version string for fetchReleaseNotes.js, e.g. 21.0.12.1 or openjdk8u462,8u501')
+        string(name: 'FILENAME',          defaultValue: '', description: 'Optional (JDK 9+, required for JDK 8). Output filename, e.g. OpenJDK21-jdk-release-notes_21.0.12.1_1.json or OpenJDK8U-jdk-release-notes_8.0.502_07.json')
+    }
+    stages {
+        stage('Validate and Resolve Parameters') {
+            steps {
+                script {
+                    if (!params.JDK_TAG) {
+                        error('JDK_TAG parameter is required')
+                    }
+                    if (!params.BASE_JDK_TAG) {
+                        error('BASE_JDK_TAG parameter is required')
+                    }
+
+                    if (isJdk8Tag(params.JDK_TAG)) {
+                        // JDK 8 uses a pre-JEP-322 versioning scheme (e.g. jdk8u502-ga).
+                        // The derived values for GITHUB_REPOSITORY, JDK_VERSION and FILENAME
+                        // cannot be calculated reliably from the tag alone (the build number
+                        // embedded in the filename requires a GitHub tag→SHA lookup), so all
+                        // three must be provided explicitly.
+                        if (!params.GITHUB_REPOSITORY) {
+                            error('GITHUB_REPOSITORY is required for JDK 8 tags (e.g. adoptium/jdk8u)')
+                        }
+                        if (!params.JDK_VERSION) {
+                            error('JDK_VERSION is required for JDK 8 tags (e.g. openjdk8u462,8u501)')
+                        }
+                        if (!params.FILENAME) {
+                            error('FILENAME is required for JDK 8 tags (e.g. OpenJDK8U-jdk-release-notes_8.0.502_07.json)')
+                        }
+                        env.RESOLVED_GITHUB_REPOSITORY = params.GITHUB_REPOSITORY
+                        env.RESOLVED_JDK_VERSION       = params.JDK_VERSION
+                        env.RESOLVED_FILENAME          = params.FILENAME
+
+                        echo "JDK_TAG:           ${params.JDK_TAG} (JDK 8 — all parameters required)"
+                        echo "BASE_JDK_TAG:      ${params.BASE_JDK_TAG}"
+                        echo "GITHUB_REPOSITORY: ${env.RESOLVED_GITHUB_REPOSITORY}"
+                        echo "JDK_VERSION:       ${env.RESOLVED_JDK_VERSION}"
+                        echo "FILENAME:          ${env.RESOLVED_FILENAME}"
+                    } else {
+                        def parsed = parseJdkTag(params.JDK_TAG)
+
+                        // For +BUILD tags use build as the suffix.
+                        // For -ga tags (build == '0') fall back to patch (e.g. jdk-21.0.12.1-ga → _1).
+                        def filenameSuffix = (parsed.build != '0') ? parsed.build : parsed.patch
+
+                        // Resolve optional parameters: use the supplied value when non-empty,
+                        // otherwise derive from JDK_TAG. The ?: operator returns the left-hand
+                        // side when it is truthy (non-null, non-empty), so an explicit param
+                        // always wins over the calculated default.
+                        env.RESOLVED_GITHUB_REPOSITORY = params.GITHUB_REPOSITORY ?: "adoptium/jdk${parsed.feature}u"
+                        env.RESOLVED_JDK_VERSION       = params.JDK_VERSION       ?: parsed.version
+                        env.RESOLVED_FILENAME          = params.FILENAME           ?: "OpenJDK${parsed.feature}-jdk-release-notes_${parsed.version}_${filenameSuffix}.json"
+
+                        echo "JDK_TAG:           ${params.JDK_TAG}"
+                        echo "BASE_JDK_TAG:      ${params.BASE_JDK_TAG}"
+                        echo "GITHUB_REPOSITORY: ${env.RESOLVED_GITHUB_REPOSITORY}${params.GITHUB_REPOSITORY ? ' (provided)' : ' (derived)'}"
+                        echo "JDK_VERSION:       ${env.RESOLVED_JDK_VERSION}${params.JDK_VERSION ? ' (provided)' : ' (derived)'}"
+                        echo "FILENAME:          ${env.RESOLVED_FILENAME}${params.FILENAME ? ' (provided)' : ' (derived)'}"
+                    }
+                }
+            }
+        }
+        stage('Checkout') {
+            steps {
+                cleanWs()
+                checkout scm
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                dir('generate-release-notes/generate-release-notes') {
+                        nvm(version:            'v24.19.0',
+                        nvmInstallURL:      'https://raw.githubusercontent.com/creationix/nvm/v0.40.7/install.sh',
+                        nvmNodeJsOrgMirror: 'https://nodejs.org/dist',
+                        nvmIoJsOrgMirror:   'https://iojs.org/dist',
+                        nvmInstallDir:      '$HOME/.nvm') {
+                        sh 'node --version'
+                        sh 'npm install'
+                    }
+                }
+            }
+        }
+        stage('Fetch Commit List') {
+            steps {
+                dir('generate-release-notes/generate-release-notes') {
+                    nvm(version:            'v24.19.0',
+                        nvmInstallURL:      'https://raw.githubusercontent.com/creationix/nvm/v0.40.7/install.sh',
+                        nvmNodeJsOrgMirror: 'https://nodejs.org/dist',
+                        nvmIoJsOrgMirror:   'https://iojs.org/dist',
+                        nvmInstallDir:      '$HOME/.nvm') {
+                        sh """
+                            echo "Generating release notes for ${params.JDK_TAG}"
+                            node ./fetchCommitList.js \
+                                --repository ${env.RESOLVED_GITHUB_REPOSITORY} \
+                                --baseTag ${params.BASE_JDK_TAG} \
+                                --tag ${params.JDK_TAG} \
+                                --filename ${params.JDK_TAG}-commits.json
+                        """
+                        sh "cat ${params.JDK_TAG}-commits.json"
+                    }
+                }
+            }
+        }
+        stage('Fetch Release Notes') {
+            steps {
+                dir('generate-release-notes/generate-release-notes') {
+                    nvm(version:            'v24.19.0',
+                        nvmInstallURL:      'https://raw.githubusercontent.com/creationix/nvm/v0.40.7/install.sh',
+                        nvmNodeJsOrgMirror: 'https://nodejs.org/dist',
+                        nvmIoJsOrgMirror:   'https://iojs.org/dist',
+                        nvmInstallDir:      '$HOME/.nvm') {
+                        sh """
+                            node ./fetchReleaseNotes.js \
+                                --commitList ./${params.JDK_TAG}-commits.json \
+                                --filename ${env.RESOLVED_FILENAME} \
+                                --version ${env.RESOLVED_JDK_VERSION}
+                        """
+                    }
+                }
+            }
+        }
+        stage('Archive Artifacts') {
+            steps {
+                dir('generate-release-notes/generate-release-notes') {
+                    archiveArtifacts artifacts: "${params.JDK_TAG}-commits.json, ${env.RESOLVED_FILENAME}",
+                                     fingerprint: true
+                }
+            }
+        }
+    }
+    post {
+        failure {
+            echo "Release notes generation failed for ${params.JDK_TAG}"
+        }
+        success {
+            script {
+                echo "Release notes successfully generated: ${env.RESOLVED_FILENAME}"
+
+                // Build a pre-populated link to the release-tool publish job so the operator
+                // can publish the generated JSON with a single click.
+                // Mirrors the parambuild pattern used in ci-jenkins-pipelines/build_base_file.groovy.
+                def publishJobPath = 'build-scripts/release/refactor_openjdk_release_tool'
+                def releaseToolUrl = "${env.JENKINS_URL}job/${publishJobPath.replace('/', '/job/')}/parambuild?"
+
+                // Derive the JDK major version for the VERSION parameter (e.g. "jdk21").
+                def versionParam
+                if (isJdk8Tag(params.JDK_TAG)) {
+                    versionParam = 'jdk8'
+                } else {
+                    def parsed = parseJdkTag(params.JDK_TAG)
+                    versionParam = "jdk${parsed.feature}"
+                }
+
+                def encodedJobName      = URLEncoder.encode(env.JOB_NAME,              'UTF-8')
+                def encodedArtifacts    = URLEncoder.encode("**/${env.RESOLVED_FILENAME}", 'UTF-8')
+                def encodedTag          = URLEncoder.encode(params.JDK_TAG,            'UTF-8')
+
+                releaseToolUrl += "VERSION=${versionParam}"
+                releaseToolUrl += "&TAG=${encodedTag}"
+                releaseToolUrl += "&UPSTREAM_JOB_NAME=${encodedJobName}"
+                releaseToolUrl += "&UPSTREAM_JOB_NUMBER=${currentBuild.number}"
+                releaseToolUrl += "&ARTIFACTS_TO_COPY=${encodedArtifacts}"
+                releaseToolUrl += "&RELEASE=true"
+                releaseToolUrl += "&DRY_RUN=false"
+
+                echo "Publish release notes — click to trigger: ${releaseToolUrl}"
+
+                // Add a clickable summary badge to the Jenkins build page, matching the
+                // pattern used in ci-jenkins-pipelines/build_base_file.groovy.
+                def summary = manager.createSummary('document.svg')
+                appendSummaryText(summary, "<b>Release notes generated: ${env.RESOLVED_FILENAME}</b><br/>")
+                appendSummaryText(summary, "<a href='${releaseToolUrl}'>Publish release notes for ${params.JDK_TAG}</a>")
+            }
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
+}

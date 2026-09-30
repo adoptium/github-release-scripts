@@ -46,10 +46,27 @@ for (const commit of commits) {
       priority: null,
       component: null,
       subcomponent: null,
-      link: `https://bugs.openjdk.java.net/browse/${commit.id}`,
+      link: `https://bugs.openjdk.org/browse/${commit.id}`,
       type: null,
       backportOf: null,
+      backportedBy: null,
     };
+  } else if (releaseNote.type === 'Backport' && releaseNote.backportOf) {
+    // For backport issues, use the master bug ID and link so that the release
+    // notes refer to the canonical bug with a description rather than the
+    // backport ticket which is usually empty.
+    const canonicalId = releaseNote.backportOf;
+    const backportIssueId = releaseNote.id;
+    releaseNote = {
+      ...releaseNote,
+      id: canonicalId,
+      link: `https://bugs.openjdk.org/browse/${canonicalId}`,
+      type: null,
+      backportOf: null,
+      backportedBy: backportIssueId,
+    };
+  } else {
+    releaseNote = { ...releaseNote, backportedBy: null };
   }
 
   output.push(releaseNote);
