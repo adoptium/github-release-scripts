@@ -159,15 +159,21 @@ pipeline {
                         nvmNodeJsOrgMirror: 'https://nodejs.org/dist',
                         nvmIoJsOrgMirror:   'https://iojs.org/dist',
                         nvmInstallDir:      '$HOME/.nvm') {
-                        sh """
-                            echo "Generating release notes for ${params.JDK_TAG}"
-                            node ./fetchCommitList.js \
-                                --repository ${env.RESOLVED_GITHUB_REPOSITORY} \
-                                --baseTag ${params.BASE_JDK_TAG} \
-                                --tag ${params.JDK_TAG} \
-                                --filename ${params.JDK_TAG}-commits.json
-                        """
-                        sh "cat ${params.JDK_TAG}-commits.json"
+                        withEnv([
+                            "JDK_TAG=${params.JDK_TAG}",
+                            "BASE_JDK_TAG=${params.BASE_JDK_TAG}",
+                            "GITHUB_REPO=${env.RESOLVED_GITHUB_REPOSITORY}"
+                        ]) {
+                            sh '''
+                                echo "Generating release notes for $JDK_TAG"
+                                node ./fetchCommitList.js \
+                                    --repository "$GITHUB_REPO" \
+                                    --baseTag "$BASE_JDK_TAG" \
+                                    --tag "$JDK_TAG" \
+                                    --filename "${JDK_TAG}-commits.json"
+                            '''
+                            sh 'cat "${JDK_TAG}-commits.json"'
+                        }
                     }
                 }
             }
