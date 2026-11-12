@@ -3,9 +3,11 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function fetchJiraJson(url, maxRetries = 5) {
+  // bugs.openjdk.org sits behind Akamai, which returns HTTP 403 (HTML) to browser-style
+  // and default fetch User-Agents but accepts curl-style ones.
   const headers = {
     Accept: 'application/json',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'User-Agent': 'curl/8.0 adoptium-release-notes/1.0',
   };
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
