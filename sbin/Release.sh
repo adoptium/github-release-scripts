@@ -147,6 +147,19 @@ if [ "$UPLOAD_TESTRESULTS_ONLY" == "false" ]; then
   files=$(find $PWD \( -name "OpenJDK*.tar.gz" -o -name "OpenJDK*.sha256.txt" -o -name "OpenJDK*.zip" -o -name "OpenJDK*.pkg" -o -name "OpenJDK*.msi" -o -name "OpenJDK*.json" -o -name "OpenJDK*.sig" \) | grep -v "makefailurelogs" | tr '\n' ' ')
 else 
   #TODO: enhance to a general file name - update groovy release() - case ~/.*AQAvitTapFiles.*/: "adopt"; break;
+  # TAP_Collection archives one *.tar.gz per platform, e.g. aarch64_linux.tar.gz.
+  # Bundle them into AQAvitTapFiles.tar.gz, the single file that gets published.
+  # If there are none, an existing AQAvitTapFiles.tar.gz is used as-is.
+  tapArchives=()
+  for archive in "$PWD"/*.tar.gz
+  do
+    if [ -f "$archive" ] && [ "$archive" != "$PWD/AQAvitTapFiles.tar.gz" ]; then
+      tapArchives+=("$(basename "$archive")")
+    fi
+  done
+  if [ ${#tapArchives[@]} -gt 0 ]; then
+    tar -czf "$PWD/AQAvitTapFiles.tar.gz" -C "$PWD" "${tapArchives[@]}"
+  fi
   files=$(ls "$PWD"/AQAvitTapFiles.tar.gz)
 fi
 
